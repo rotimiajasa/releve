@@ -485,7 +485,6 @@ const PH = {
   desk:{src:"https://images.pexels.com/photos/48604/pexels-photo-48604.jpeg?auto=compress&cs=tinysrgb&w=1200", alt:"Stethoscope beside a laptop on a white desk", place:{en:"Clinic desk",fr:"Bureau de clinique"}, by:"Negative Space", lib:"Pexels", page:"https://www.pexels.com/photo/48604/"}
 };
 const img = (k, eager=false) => `<img src="${PH[k].src}" alt="${esc(PH[k].alt)}" ${eager?'fetchpriority="high"':'loading="lazy"'} decoding="async" data-photo>`;
-const credit = k => `${S.lang==="fr"?"Photo :":"Photo:"} <a href="${PH[k].page}" target="_blank" rel="noopener">${esc(PH[k].by)}, ${PH[k].lib}</a>`;
 function wirePhotos(){
   document.querySelectorAll("img[data-photo]").forEach(i=>{
     const fail=()=>{ const h=i.closest("[data-ph]"); if(h) h.classList.add("nophoto"); };
@@ -722,7 +721,7 @@ function vHome(){
       <p class="fine">${t("hero_fine")}</p>
     </div>
     <div class="hero-visual" data-ph>
-    <figure class="ph hero-ph">${img("road",true)}<figcaption>${esc(PH.road.place[S.lang])}. ${credit("road")}</figcaption></figure>
+    <figure class="ph hero-ph">${img("road",true)}</figure>
     <article class="check-card" aria-label="Example eligibility check">
       <div class="cc-head"><h3>Bulkley Valley Clinic</h3><p class="where">${t("cc_where")}</p></div>
       <dl class="cc-facts">
@@ -744,7 +743,7 @@ function vHome(){
 
   <section class="coast"><div class="wrap">
     <div class="coast-head"><h2>${t("coast_h")}</h2><p>${t("regs_p")}</p></div>
-    <div class="coast-grid">${["cove","mtl","bc"].map(k=>`<figure class="tile" data-ph>${img(k)}<figcaption><b>${esc(PH[k].place[S.lang])}</b><span>${t("coast_reg")} ${PH[k].college}</span><small>${credit(k)}</small></figcaption></figure>`).join("")}</div>
+    <div class="coast-grid">${["cove","mtl","bc"].map(k=>`<figure class="tile" data-ph>${img(k)}<figcaption><b>${esc(PH[k].place[S.lang])}</b><span>${t("coast_reg")} ${PH[k].college}</span></figcaption></figure>`).join("")}</div>
   </div></section>
 
   <section class="sec" id="physicians"><div class="wrap">
@@ -769,7 +768,7 @@ function vHome(){
         </tbody></table>
       </div>
       <div>
-      <figure class="ph side-ph" data-ph>${img("desk")}<figcaption>${credit("desk")}</figcaption></figure>
+      <figure class="ph side-ph" data-ph>${img("desk")}</figure>
       <div class="feat">
         <div><h3>${t("f1_h")}</h3><p>${t("f1_p")}</p></div>
         <div><h3>${t("f2_h")}</h3><p>${t("f2_p")}</p></div>
@@ -793,7 +792,7 @@ function vHome(){
     </div>
   </div></section>
 
-  <footer class="foot"><div class="wrap"><span>© 2026 Relève. ${t("foot_l")}</span>    <p class="credits">${t("photos_by")}: ${Object.keys(PH).map(k=>`<a href="${PH[k].page}" target="_blank" rel="noopener">${esc(PH[k].by)}</a>`).join(", ")}. ${S.lang==="fr"?"Utilisées selon les licences Unsplash et Pexels.":"Used under the Unsplash and Pexels licences."}</p></div></footer>`;
+  <footer class="foot"><div class="wrap"><span>© 2026 Relève. ${t("foot_l")}</span></div></footer>`;
 }
 
 /* ============ Sign in / create account ============ */
@@ -820,7 +819,7 @@ function vSignin(){
     </div>`;
   return `<div class="auth">
     <div class="auth-main"><div class="auth-box"><h1>${tab==="up"?t("a_new"):t("a_title")}</h1>${form}${demo}</div></div>
-    <aside class="auth-side" data-ph>${img("bc",true)}<blockquote>${t("a_quote")}</blockquote><p class="credit">${esc(PH.bc.place[S.lang])}. ${credit("bc")}</p></aside>
+    <aside class="auth-side" data-ph>${img("bc",true)}<blockquote>${t("a_quote")}</blockquote></aside>
   </div>`;
 }
 
