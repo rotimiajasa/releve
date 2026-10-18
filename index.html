@@ -1,0 +1,1224 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>html{color-scheme:light dark}body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+</head>
+<body>
+<title>Relève</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Locum shifts across Canada, checked against your provincial licences, CMPA cover and course dates before you book.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700;800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* Layout: marketing page in a 1200px measure with alternating two-column bands; app is a top-tabbed shell with list/detail split views */
+/* Palette: Canadian red (FIP red, Pantone 032, for the mark; a deeper accessible red for actions), federal-service navy for text, snow and glacier neutrals */
+:root{
+  --paper:#ffffff; --wash:#f4f6f8; --wash-2:#e6edf2; --ink:#1b2a3a; --ink-2:#465668; --ink-3:#66768a; --line:#d6dee6;
+  --flag:#eb2d37; --brand:#c8102e; --brand-wash:#fbe9eb; --navy:#1b2a3a; --navy-ink:#ffffff;
+  --act:#c8102e; --act-ink:#ffffff; --act-hover:#a90d26;
+  --ok:#16764a; --ok-wash:#e4f2ea; --warn:#8f5406; --warn-wash:#fbf0dc; --bad:#9e1b32; --bad-wash:#f9e6e9; --info:#2f4a6b;
+  --f-head:"Schibsted Grotesk","Helvetica Neue",Arial,sans-serif;
+  --f-body:"Atkinson Hyperlegible","Segoe UI",Roboto,Arial,sans-serif;
+  --shadow:0 1px 2px rgb(22 27 38/.06),0 18px 40px -18px rgb(22 27 38/.22);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#0f1720; --wash:#152130; --wash-2:#1c2a3b; --ink:#edf1f5; --ink-2:#b6c1cd; --ink-3:#8e9bab; --line:#26364a;
+  --flag:#eb2d37; --brand:#ff7a82; --brand-wash:#3a1d24; --navy:#0a121b; --navy-ink:#edf1f5;
+  --act:#c8102e; --act-ink:#ffffff; --act-hover:#e0233f;
+  --ok:#6fcf9b; --ok-wash:#16301f; --warn:#f0b866; --warn-wash:#352812; --bad:#ff8f8f; --bad-wash:#3a1b1e; --info:#a9bfdc;
+  --shadow:0 1px 2px rgb(0 0 0/.3),0 18px 40px -18px rgb(0 0 0/.6); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0f1720; --wash:#152130; --wash-2:#1c2a3b; --ink:#edf1f5; --ink-2:#b6c1cd; --ink-3:#8e9bab; --line:#26364a;
+  --flag:#eb2d37; --brand:#ff7a82; --brand-wash:#3a1d24; --navy:#0a121b; --navy-ink:#edf1f5;
+  --act:#c8102e; --act-ink:#ffffff; --act-hover:#e0233f;
+  --ok:#6fcf9b; --ok-wash:#16301f; --warn:#f0b866; --warn-wash:#352812; --bad:#ff8f8f; --bad-wash:#3a1b1e; --info:#a9bfdc;
+  --shadow:0 1px 2px rgb(0 0 0/.3),0 18px 40px -18px rgb(0 0 0/.6); color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:var(--f-head);margin:0;text-wrap:balance;color:var(--ink)}
+p{margin:0}
+a{color:inherit}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:3px}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px))}
+.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--ink-2)}
+.small{font-size:.875rem}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);padding:10px 16px;border-radius:6px;font-weight:700;font-size:.95rem;cursor:pointer;text-decoration:none;line-height:1.2;white-space:nowrap}
+.btn:hover{background:var(--wash)}
+.btn.primary{background:var(--act);color:var(--act-ink);border-color:var(--act)}
+.btn.primary:hover{background:var(--act-hover);border-color:var(--act-hover)}
+.btn.quiet{border-color:transparent;background:transparent;padding-inline:10px}
+.btn.quiet:hover{background:var(--wash)}
+.btn.lg{padding:14px 22px;font-size:1rem}
+.btn.sm{padding:6px 11px;font-size:.85rem}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.link{background:none;border:0;padding:0;color:var(--ink);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--ink-3);cursor:pointer}
+.link:hover{text-decoration-color:var(--ink)}
+
+/* Top bar */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--paper);border-bottom:1px solid var(--line);box-shadow:inset 0 3px 0 var(--flag)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:21;background:var(--paper)}
+.top .wrap{display:flex;align-items:center;gap:28px;height:64px}
+.mark{display:flex;align-items:center;gap:10px;font-family:var(--f-head);font-weight:800;font-size:1.25rem;letter-spacing:-.02em;text-decoration:none;color:var(--ink);background:none;border:0;padding:0;cursor:pointer}
+.mark svg{flex:none}
+.topnav{display:flex;gap:4px;flex:1}
+.topnav button{background:none;border:0;padding:8px 10px;border-radius:6px;cursor:pointer;color:var(--ink-2);font-weight:700;font-size:.93rem}
+.topnav button:hover{color:var(--ink);background:var(--wash)}
+.topnav button[aria-current="page"]{color:var(--ink);box-shadow:inset 0 -2px 0 var(--brand);border-radius:0}
+.top-right{display:flex;align-items:center;gap:8px}
+.lang{display:flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.lang button{border:0;background:none;padding:5px 9px;font-size:.8rem;font-weight:700;color:var(--ink-3);cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--wash-2);color:var(--ink)}
+.menu-btn{display:none}
+.lang-link .short,.show-sm{display:none}
+.demo-strip{background:var(--wash);border-bottom:1px solid var(--line);font-size:.85rem;color:var(--ink-2)}
+.demo-strip .wrap{padding-block:8px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+
+/* ---------- Marketing ---------- */
+.hero{padding-block:72px 64px}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:64px;align-items:center}
+.hero h1{hyphens:auto;font-size:clamp(2.1rem,5.2vw,4.1rem);line-height:1.02;letter-spacing:-.035em;font-weight:800}
+.hero .lede{font-size:1.2rem;line-height:1.55;color:var(--ink-2);margin-top:22px;max-width:34em}
+.hero .ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
+.hero .fine{margin-top:18px;font-size:.9rem;color:var(--ink-3)}
+
+.check-card{background:var(--paper);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);overflow:hidden}
+.cc-head{padding:22px 24px 18px;border-bottom:1px solid var(--line)}
+.cc-head .where{color:var(--ink-2);font-size:.95rem;margin-top:2px}
+.cc-head h3{font-size:1.25rem;letter-spacing:-.01em}
+.cc-facts{display:grid;grid-template-columns:1fr 1fr;gap:14px 20px;padding:18px 24px;border-bottom:1px solid var(--line)}
+.cc-facts dt{font-size:.8rem;color:var(--ink-3)}
+.cc-facts dd{margin:2px 0 0;font-weight:700}
+.cc-facts .big{font-family:var(--f-head);font-size:1.5rem;font-weight:800;letter-spacing:-.02em}
+.cc-checks{list-style:none;margin:0;padding:12px 24px 6px}
+.cc-checks li{display:grid;grid-template-columns:22px 1fr;gap:12px;padding:9px 0;align-items:start;font-size:.95rem}
+.cc-checks li + li{border-top:1px dashed var(--line)}
+.cc-foot{padding:16px 24px 20px;display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--wash)}
+.cc-foot p{font-size:.9rem;color:var(--ink-2);max-width:26em}
+@media (prefers-reduced-motion:no-preference){
+  .cc-checks li{animation:settle .5s ease both}
+  .cc-checks li:nth-child(1){animation-delay:.35s}.cc-checks li:nth-child(2){animation-delay:.7s}
+  .cc-checks li:nth-child(3){animation-delay:1.05s}.cc-checks li:nth-child(4){animation-delay:1.4s}
+  .cc-foot{animation:settle .5s ease 1.8s both}
+  @keyframes settle{from{opacity:.28}to{opacity:1}}
+}
+
+.band{background:var(--wash);border-block:1px solid var(--line)}
+.regs{padding-block:28px;display:flex;gap:28px;align-items:center;flex-wrap:wrap}
+.regs p{font-weight:700;max-width:22em}
+.regs ul{display:flex;flex-wrap:wrap;gap:6px 22px;list-style:none;margin:0;padding:0;flex:1;color:var(--ink-2);font-family:var(--f-head);font-weight:600}
+
+.sec{padding-block:96px}
+.sec-head{max-width:40em}
+.sec-head h2{font-size:clamp(1.9rem,3.4vw,2.7rem);line-height:1.08;letter-spacing:-.03em;font-weight:800}
+.sec-head p{margin-top:16px;font-size:1.1rem;color:var(--ink-2)}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px;margin-top:56px;counter-reset:s;list-style:none;padding:0}
+.steps li{border-top:2px solid var(--ink);padding-top:20px}
+.steps .n{font-family:var(--f-head);font-weight:800;font-size:.95rem;color:var(--brand)}
+.steps h3{font-size:1.3rem;margin-top:6px;letter-spacing:-.01em}
+.steps p{margin-top:10px;color:var(--ink-2)}
+
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:72px;align-items:start;margin-top:56px}
+.feat{display:grid;gap:30px}
+.feat h3{font-size:1.15rem}
+.feat p{color:var(--ink-2);margin-top:6px}
+.mini{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--paper);box-shadow:var(--shadow)}
+.mini-h{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.mini-h b{font-family:var(--f-head)}
+.mini table{width:100%;border-collapse:collapse;font-size:.9rem}
+.mini td{padding:12px 20px;border-bottom:1px solid var(--line);vertical-align:top}
+.mini tr:last-child td{border-bottom:0}
+.mini .why{color:var(--ink-2);font-size:.82rem;margin-top:2px}
+
+.law{margin-top:48px;border-top:2px solid var(--ink)}
+.law-row{display:grid;grid-template-columns:220px minmax(0,1fr);gap:32px;padding:24px 0;border-bottom:1px solid var(--line)}
+.law-row h3{font-size:1.05rem}
+.law-row p{color:var(--ink-2);max-width:62ch}
+.law-note{margin-top:20px;font-size:.88rem;color:var(--ink-3);max-width:62ch}
+
+.price{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:48px}
+.plan{border:1px solid var(--line);border-radius:10px;padding:32px;display:flex;flex-direction:column;gap:16px}
+.plan.dark{background:var(--navy);color:var(--navy-ink);border-color:var(--navy)}
+.plan.dark h3,.plan.dark .muted{color:var(--navy-ink)}
+.plan.dark .muted{opacity:.75}
+.plan .amt{font-family:var(--f-head);font-size:2.4rem;font-weight:800;letter-spacing:-.03em;line-height:1}
+.plan ul{margin:0;padding-left:20px;display:grid;gap:6px}
+.plan .btn{align-self:flex-start;margin-top:auto;white-space:normal;text-align:left}
+.plan{min-width:0}
+.plan.dark .btn{background:var(--act);color:var(--act-ink);border-color:var(--act)}
+
+/* Photography */
+.ph{margin:0;position:relative;overflow:hidden;background:var(--wash-2)}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.hero-visual{position:relative;display:grid}
+.hero-ph{border-radius:12px;aspect-ratio:1/1}
+.hero-ph figcaption{position:absolute;top:14px;right:14px;font-size:.75rem;color:#fff;background:rgb(16 26 38/.55);padding:4px 9px;border-radius:4px}
+.hero-ph figcaption a{color:inherit}
+.hero-visual .check-card{position:relative;margin:-300px 0 0 -72px;width:calc(100% - 40px)}
+.hero-visual.nophoto .hero-ph{display:none}
+.hero-visual.nophoto .check-card{margin:0;width:auto}
+.coast{padding-block:72px;background:var(--wash);border-block:1px solid var(--line)}
+.coast-head{display:flex;justify-content:space-between;gap:16px 48px;align-items:flex-end;flex-wrap:wrap}
+.coast-head h2{font-size:clamp(1.7rem,3vw,2.3rem);line-height:1.1;letter-spacing:-.03em;font-weight:800;max-width:16em}
+.coast-head p{color:var(--ink-2);max-width:30em}
+.coast-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:36px}
+.tile{margin:0;background:var(--paper);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.tile img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:var(--wash-2)}
+.tile figcaption{padding:14px 16px 16px;display:grid;gap:3px;border-top:3px solid var(--flag)}
+.tile figcaption b{font-family:var(--f-head);font-size:1.05rem}
+.tile figcaption span{font-size:.9rem;color:var(--ink-2)}
+.tile figcaption small{font-size:.75rem;color:var(--ink-3)}
+.tile figcaption small a{color:inherit}
+.tile.nophoto img{display:none}
+.regs-list{display:flex;flex-wrap:wrap;gap:6px 22px;list-style:none;margin:28px 0 0;padding:0;color:var(--ink-2);font-family:var(--f-head);font-weight:600}
+.side-ph{border-radius:10px;aspect-ratio:16/9;margin-bottom:36px}
+.side-ph.nophoto{display:none}
+.side-ph figcaption{position:absolute;bottom:10px;right:12px;font-size:.75rem;color:#fff;background:rgb(16 26 38/.55);padding:3px 8px;border-radius:4px}
+.side-ph figcaption a{color:inherit}
+.credits{font-size:.8rem;color:var(--ink-3);margin-top:12px;max-width:72ch}
+.credits a{color:inherit}
+
+.foot{border-top:1px solid var(--line);padding-block:40px;color:var(--ink-3);font-size:.9rem}
+.foot .wrap{display:flex;justify-content:space-between;gap:12px 24px;flex-wrap:wrap}
+.foot .credits{flex-basis:100%}
+
+/* ---------- Auth ---------- */
+.auth{min-height:calc(100vh - 64px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.auth-main{padding:64px max(24px,env(safe-area-inset-left,0px)) 64px;display:flex;justify-content:center}
+.auth-box{width:100%;max-width:400px;display:flex;flex-direction:column;gap:22px}
+.auth-box h1{font-size:2rem;letter-spacing:-.03em}
+.auth-side{position:relative;overflow:hidden;background:var(--navy);color:#fff;padding:64px max(48px,env(safe-area-inset-right,0px)) 48px 48px;display:flex;flex-direction:column;justify-content:flex-end;gap:14px;min-height:420px}
+.auth-side img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.auth-side::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgb(16 26 38/.15) 0%,rgb(16 26 38/.55) 45%,rgb(16 26 38/.92) 100%)}
+.auth-side > :not(img){position:relative;z-index:1}
+.auth-side.nophoto img{display:none}
+.auth-side blockquote{margin:0;font-family:var(--f-head);font-size:1.5rem;line-height:1.3;letter-spacing:-.015em;font-weight:600;max-width:24em;color:#fff}
+.auth-side .muted{color:rgb(255 255 255/.78)}
+.credit{font-size:.75rem;color:rgb(255 255 255/.7)}
+.credit a{color:inherit}
+.seg{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:7px;padding:3px;gap:3px;background:var(--wash)}
+.seg button{border:0;background:none;padding:8px;border-radius:5px;font-weight:700;cursor:pointer;color:var(--ink-2)}
+.seg button[aria-pressed="true"]{background:var(--paper);color:var(--ink);box-shadow:0 1px 2px rgb(0 0 0/.08)}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-weight:700;font-size:.9rem}
+.field .hint{font-size:.82rem;color:var(--ink-3)}
+input[type=text],input[type=email],input[type=password],input[type=number],input[type=date],select,textarea{width:100%;background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:10px 12px;min-width:0}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--brand);outline-offset:0;border-color:transparent}
+.persona{display:grid;gap:8px}
+.persona button{display:grid;grid-template-columns:1fr auto;align-items:center;gap:4px 12px;text-align:left;border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:14px 16px;cursor:pointer}
+.persona button:hover{border-color:var(--ink-3)}
+.persona b{font-family:var(--f-head)}
+.persona span{grid-column:1;font-size:.86rem;color:var(--ink-2)}
+.persona i{grid-row:1/3;grid-column:2;font-style:normal;color:var(--ink-3);font-size:.85rem}
+.err{color:var(--bad);font-size:.9rem}
+.ok-msg{color:var(--ok);font-size:.9rem}
+.or{display:flex;align-items:center;gap:12px;color:var(--ink-3);font-size:.85rem}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+
+/* ---------- App ---------- */
+.app{padding-block:32px 80px}
+.page-h{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+.page-h h1{font-size:1.85rem;letter-spacing:-.025em}
+.page-h p{color:var(--ink-2);margin-top:6px;max-width:60ch}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.toolbar select{width:auto}
+.tgl{display:inline-flex;align-items:center;gap:8px;font-size:.92rem;cursor:pointer}
+.tgl input{width:16px;height:16px;accent-color:var(--act)}
+.count{margin-left:auto;font-size:.9rem;color:var(--ink-2)}
+
+.sv{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:20px;min-height:560px}
+.sv-list{border-right:1px solid var(--line);overflow:auto;max-height:78vh}
+.row{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:4px 14px;width:100%;text-align:left;padding:16px 18px;border:0;border-bottom:1px solid var(--line);background:var(--paper);cursor:pointer;align-items:start}
+.row:hover{background:var(--wash)}
+.row[aria-selected="true"]{background:var(--wash-2)}
+.row .t{font-weight:700;font-family:var(--f-head);font-size:1rem}
+.row .s{color:var(--ink-2);font-size:.88rem;grid-column:2}
+.row .r{grid-column:3;grid-row:1/3;text-align:right}
+.row .r b{font-family:var(--f-head);font-size:1.05rem;display:block}
+.row .r span{font-size:.8rem;color:var(--ink-3)}
+.row .flag{color:var(--bad);font-size:.8rem;font-weight:700;margin-left:8px;font-family:var(--f-body)}
+.sv-detail{padding:28px;overflow:auto;max-height:78vh;display:flex;flex-direction:column;gap:22px}
+.sv-detail h2{font-size:1.5rem;letter-spacing:-.02em}
+.facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 24px;margin:0}
+.facts dt{font-size:.82rem;color:var(--ink-3)}
+.facts dd{margin:2px 0 0;font-weight:700}
+.checks{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:8px}
+.checks li{display:grid;grid-template-columns:20px 1fr;gap:12px;padding:12px 14px;font-size:.95rem}
+.checks li + li{border-top:1px solid var(--line)}
+.ic{width:20px;height:20px;flex:none;margin-top:1px}
+.ic.ok{color:var(--ok)} .ic.warn{color:var(--warn)} .ic.bad{color:var(--bad)} .ic.info{color:var(--info)}
+.verdict{padding:14px 16px;border-radius:8px;font-size:.95rem}
+.verdict.ok{background:var(--ok-wash)} .verdict.warn{background:var(--warn-wash)} .verdict.bad{background:var(--bad-wash)}
+.terms{font-size:.92rem;color:var(--ink-2);display:grid;gap:6px;margin:0;padding-left:18px}
+.terms b{color:var(--ink)}
+.book-bar{display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding-top:18px;border-top:1px solid var(--line);margin-top:auto}
+
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+table.tbl{width:100%;border-collapse:collapse;font-size:.93rem}
+.tbl th{text-align:left;font-weight:700;font-size:.82rem;color:var(--ink-2);padding:12px 16px;border-bottom:1px solid var(--line);background:var(--wash);white-space:nowrap}
+.tbl td{padding:14px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl tr:last-child td{border-bottom:0}
+.tbl td.r,.tbl th.r{text-align:right}
+.tbl .sub{color:var(--ink-3);font-size:.84rem;margin-top:2px}
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:.84rem;font-weight:700;white-space:nowrap}
+.tag .ic{width:16px;height:16px;margin:0}
+.tag.ok{color:var(--ok)} .tag.warn{color:var(--warn)} .tag.bad{color:var(--bad)} .tag.info{color:var(--info)} .tag.mute{color:var(--ink-3)}
+.actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.group{display:grid;gap:12px;margin-top:32px}
+.group h2{font-size:1.15rem}
+.empty{padding:40px 24px;text-align:center;color:var(--ink-2);display:grid;gap:12px;justify-items:center}
+.stats{display:flex;gap:40px;flex-wrap:wrap;padding:4px 0 24px}
+.stats div{display:grid}
+.stats b{font-family:var(--f-head);font-size:1.6rem;letter-spacing:-.02em}
+.stats span{font-size:.86rem;color:var(--ink-2)}
+.notice{border:1px solid var(--line);border-left:3px solid var(--warn);background:var(--warn-wash);padding:12px 16px;border-radius:6px;font-size:.93rem;margin-bottom:20px}
+.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.panel{border:1px solid var(--line);border-radius:10px;padding:24px;display:grid;gap:12px;align-content:start}
+.panel h2{font-size:1.15rem}
+.panel ul{margin:0;padding-left:18px;display:grid;gap:6px;color:var(--ink-2)}
+.cand{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 16px;padding:16px 0;border-bottom:1px solid var(--line)}
+.cand:last-child{border-bottom:0}
+.cand .nm{font-family:var(--f-head);font-weight:700}
+.cand .why{display:flex;flex-wrap:wrap;gap:4px 14px;grid-column:1}
+.cand .sc{grid-row:1/3;grid-column:2;display:flex;align-items:center;gap:12px}
+.meter{width:72px;height:6px;background:var(--wash-2);border-radius:3px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--brand)}
+
+dialog{border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink);padding:0;width:min(560px,calc(100vw - 32px));max-height:90vh;box-shadow:var(--shadow)}
+dialog::backdrop{background:rgb(17 20 27/.5)}
+.dlg{padding:28px;display:grid;gap:18px;overflow:auto;max-height:90vh}
+.dlg h2{font-size:1.35rem;letter-spacing:-.02em}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-grid .full{grid-column:1/-1}
+.dlg-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+pre.json{background:var(--wash);border:1px solid var(--line);border-radius:6px;padding:12px;font-size:.78rem;max-height:40vh;overflow:auto;white-space:pre-wrap;word-break:break-word}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(24px + env(safe-area-inset-bottom,0px));background:var(--navy);color:var(--navy-ink);padding:12px 18px;border-radius:8px;font-weight:700;font-size:.93rem;z-index:50;max-width:calc(100vw - 32px);box-shadow:var(--shadow)}
+.loading{padding:48px;text-align:center;color:var(--ink-3)}
+
+@media (max-width:960px){
+  .hero .wrap,.split,.auth{grid-template-columns:1fr}
+  .hero .wrap{gap:48px}
+  .steps{grid-template-columns:1fr;gap:28px}
+  .coast-grid{grid-template-columns:1fr 1fr}
+  .hero-visual .check-card{margin:-160px 16px 0;width:auto}
+  .hero-ph{aspect-ratio:4/3}
+  .auth-side{padding:40px max(24px,env(safe-area-inset-left,0px)) 32px;min-height:340px}
+  .sv{grid-template-columns:1fr}
+  .sv-list{border-right:0;border-bottom:1px solid var(--line);max-height:none}
+  .sv-detail{max-height:none}
+  .cols,.price{grid-template-columns:1fr}
+}
+@media (max-width:720px){
+  .topnav{display:none}
+  .topnav.open{display:flex;position:absolute;top:64px;left:0;right:0;flex-direction:column;background:var(--paper);border-bottom:1px solid var(--line);padding:8px max(16px,env(safe-area-inset-left,0px));gap:2px}
+  .topnav.open button{text-align:left;padding:12px 8px}
+  .topnav.open button[aria-current="page"]{box-shadow:none;background:var(--wash)}
+  .menu-btn{display:inline-flex}
+  .top .wrap{gap:12px}
+  .top-right .hide-sm{display:none}
+  .lang-link .long{display:none} .lang-link .short{display:inline}
+  .topnav.open .show-sm{display:block}
+  .top-right{gap:4px}
+  .wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  .hero{padding-block:44px 48px}
+  .sec{padding-block:64px}
+  .law-row{grid-template-columns:1fr;gap:6px}
+  .plan{padding:24px}
+  .cc-facts,.facts,.form-grid{grid-template-columns:1fr}
+  .coast-grid{grid-template-columns:1fr}
+  .hero-visual .check-card{margin:-90px 10px 0}
+  .sv-detail{padding:20px}
+  .row{grid-template-columns:22px minmax(0,1fr)}
+  .row .r{grid-column:2;grid-row:auto;text-align:left;display:flex;gap:8px;align-items:baseline}
+  .row .r b{display:inline}
+  .cand{grid-template-columns:1fr}
+  .cand .sc{grid-row:auto;grid-column:1}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media (max-width:350px){.mark span{display:none}.hero h1{font-size:1.9rem}}
+</style>
+
+<div id="root"></div>
+<dialog id="dlg"><div class="dlg" id="dlg-body"></div></dialog>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+"use strict";
+/* ============ Configuration ============ */
+const CONFIG = {
+  url: "https://qgthjmcwevzezbpimayg.supabase.co",
+  // Public (anon) key: safe in the browser. Row-level security enforces access.
+  key: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFndGhqbWN3ZXZ6ZXpicGltYXlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIyODgxOTYsImV4cCI6MjEwNzg2NDE5Nn0.tnl8Wny_Lqi48WBRSBeUHlwjBSi9LMwWxCHLAEzoTz4"
+};
+
+/* ============ Reference data ============ */
+const PROV = {
+  AB:{en:"Alberta",fr:"Alberta",college:"CPSA"}, BC:{en:"British Columbia",fr:"Colombie-Britannique",college:"CPSBC"},
+  MB:{en:"Manitoba",fr:"Manitoba",college:"CPSM"}, NB:{en:"New Brunswick",fr:"Nouveau-Brunswick",college:"CPSNB"},
+  NL:{en:"Newfoundland and Labrador",fr:"Terre-Neuve-et-Labrador",college:"CPSNL"}, NS:{en:"Nova Scotia",fr:"Nouvelle-Écosse",college:"CPSNS"},
+  NT:{en:"Northwest Territories",fr:"Territoires du Nord-Ouest",college:"NWT Professional Licensing"}, NU:{en:"Nunavut",fr:"Nunavut",college:"Nunavut Professional Licensing"},
+  ON:{en:"Ontario",fr:"Ontario",college:"CPSO"}, PE:{en:"Prince Edward Island",fr:"Île-du-Prince-Édouard",college:"CPSPEI"},
+  QC:{en:"Québec",fr:"Québec",college:"CMQ"}, SK:{en:"Saskatchewan",fr:"Saskatchewan",college:"CPSS"}, YT:{en:"Yukon",fr:"Yukon",college:"Yukon Medical Council"}
+};
+const EMRS = ["Accuro","OSCAR Pro","PS Suite","Med Access","Myle","TELUS CHR","Epic","Cerner"];
+
+/* ============ Copy (EN / FR) ============ */
+const COPY = {
+ en:{
+  nav_phys:"For physicians", nav_clin:"For clinics", nav_law:"Compliance", nav_price:"Pricing", signin:"Sign in", signout:"Sign out", post:"Post a shift",
+  hero_h:"Locum work you’re licensed for, anywhere in Canada.",
+  hero_p:"Relève checks every shift against your provincial licences, CMPA cover and course dates before you see it. Clinics fill gaps faster, and you stop chasing paperwork.",
+  hero_c1:"Find locum shifts", hero_c2:"Post a shift", hero_fine:"Free for physicians. Data hosted in Canada.",
+  cc_where:"Smithers, British Columbia", cc_dates:"Dates", cc_dates_v:"9 to 20 November, 12 days", cc_pay:"Pay", cc_pay_v:"$1,400 a day, guaranteed", cc_travel:"Travel", cc_travel_v:"$1,800", cc_take:"Estimated take-home",
+  cc_1:"CPSBC licence verified, valid to 28 February 2027", cc_2:"CMPA membership covers all 12 days", cc_3:"The clinic uses OSCAR Pro, which you know", cc_4:"Your ACLS card expires 2 November, before this shift starts",
+  cc_foot:"You can hold this shift now. It confirms when your renewed ACLS card is uploaded.", cc_btn:"Hold shift",
+  regs_p:"One profile, checked against each regulator you’re licensed with.", coast_h:"From Peggy’s Cove to the Fraser Valley", coast_reg:"Licences checked against the", photos_by:"Photography",
+  phys_h:"From verified to paid, without the admin", phys_p:"Locum work is short. The paperwork around it shouldn’t take longer than the shift.",
+  s1_h:"Verify once", s1_p:"Add your licences, CMPA membership, certifications and courses. Licences are checked against the college register, and you’re reminded before anything expires.",
+  s2_h:"Book what fits", s2_p:"See take-home pay before you book, whether the clinic pays per diem or fee-for-service minus overhead. Every booking comes with a written locum agreement.",
+  s3_h:"Get paid on time", s3_p:"Submit your timesheet, the clinic approves it, and an invoice is issued for you. Payment is due within 14 days, or choose next-day pay.",
+  clin_h:"Fill a gap in hours, not weeks", clin_p:"Post a shift once. Relève offers it to your own locums first, then to verified physicians licensed in your province.",
+  f1_h:"Your own locums first", f1_p:"Each clinic keeps a private bank of physicians it trusts. New shifts reach them before the wider marketplace.",
+  f2_h:"Candidates you can explain", f2_p:"Every suggestion comes with its reasons: licensed in your province, CMPA in date, knows your EMR. The decision stays with you.",
+  f3_h:"Agreements and invoices handled", f3_p:"Scope, on-call, overhead and payment terms are written into every booking. Approving a timesheet issues the invoice.",
+  f4_h:"No patient data", f4_p:"Clinical work stays in your EMR. Relève holds workforce records only.",
+  mini_h:"Covering Dr. Baker, 23 to 27 November", mini_s:"Danforth Family Health Team",
+  law_h:"Designed around Canadian law", law_p:"Medicine is regulated province by province. The product enforces that rather than leaving it to a checklist.",
+  l1_h:"Licensure and liability", l1_p:"A shift is only bookable if you hold a licence where it takes place and your CMPA cover runs to its last day. Ontario’s automatic recognition route for physicians licensed elsewhere in Canada is shown as a step to finish before you start.",
+  l2_h:"Liability cover", l2_p:"CMPA membership dates are checked against every shift. If cover lapses partway, the shift can’t be booked.",
+  l3_h:"Privacy", l3_p:"Data is hosted in Canada, in the Montréal region. Relève follows PIPEDA and is preparing for Bill C-36. Québec users are covered by a Law 25 privacy impact assessment and a full French service.",
+  l4_h:"Health information", l4_p:"No patient information enters the platform, so clinics’ obligations under PHIPA, the HIA and similar laws stay with their EMR.",
+  l5_h:"Fair treatment", l5_p:"If an account is ever restricted, the physician gets written reasons, notice and an appeal to a person, in line with Ontario’s Digital Platform Workers’ Rights Act.",
+  l6_h:"Records", l6_p:"Bookings, credential changes and candidate searches are written to a permanent audit log. Physicians can export everything held about them.",
+  law_note:"This summary describes how the product is built. It is not legal advice.",
+  price_h:"Free for physicians. Clinics pay when a shift is filled.",
+  p1_t:"Physicians", p1_a:"Free", p1_l:["Shift board filtered by your licences","Credential wallet with expiry reminders","Written agreements and invoices","Optional next-day pay"], p1_b:"Create a physician account",
+  p2_t:"Clinics", p2_a:"Per filled shift", p2_d:"No subscription. Pilot pricing for Ontario Health Teams and Divisions of Family Practice.", p2_l:["Private locum bank","Ranked candidates with reasons","Timesheets, approvals and invoicing","Audit log and reporting"], p2_b:"Create a clinic account",
+  foot_l:"Hosted in Canada. Bilingual service.",
+  a_title:"Sign in to Relève", a_new:"Create an account", a_email:"Email", a_pw:"Password", a_name:"Full name", a_role:"I am a", a_phys:"Physician", a_clinic:"Clinic team",
+  a_go:"Sign in", a_create:"Create account", a_demo:"Explore with sample data", a_demo_p:"The live database isn’t reachable from this preview, so you can try every screen with sample records instead.",
+  a_quote:"Licences, CMPA cover and courses are checked before every booking, in every province and territory.",
+  t_shifts:"Shifts", t_bookings:"Bookings", t_pay:"Pay", t_creds:"Credentials", t_account:"Account", t_cshifts:"Shifts", t_ctime:"Timesheets", t_verify:"Verification",
+  demo_strip:"You’re viewing sample data. The hosted version connects to the live Canadian database.", demo_exit:"Leave demo"
+ },
+ fr:{
+  nav_phys:"Médecins", nav_clin:"Cliniques", nav_law:"Conformité", nav_price:"Tarifs", signin:"Se connecter", signout:"Se déconnecter", post:"Publier un remplacement",
+  hero_h:"Des remplacements pour lesquels vous avez un permis, partout au Canada.",
+  hero_p:"Relève vérifie chaque remplacement selon vos permis provinciaux, votre protection de l’ACPM et vos formations avant de vous l’afficher. Les cliniques comblent leurs besoins plus vite, et vous n’avez plus à courir après les documents.",
+  hero_c1:"Trouver un remplacement", hero_c2:"Publier un remplacement", hero_fine:"Gratuit pour les médecins. Données hébergées au Canada.",
+  cc_where:"Smithers, Colombie-Britannique", cc_dates:"Dates", cc_dates_v:"Du 9 au 20 novembre, 12 jours", cc_pay:"Rémunération", cc_pay_v:"1 400 $ par jour, garantis", cc_travel:"Déplacement", cc_travel_v:"1 800 $", cc_take:"Revenu net estimé",
+  cc_1:"Permis du CPSBC vérifié, valide jusqu’au 28 février 2027", cc_2:"L’adhésion à l’ACPM couvre les 12 jours", cc_3:"La clinique utilise OSCAR Pro, que vous connaissez", cc_4:"Votre carte ACLS expire le 2 novembre, avant le début du remplacement",
+  cc_foot:"Vous pouvez réserver ce remplacement maintenant. Il sera confirmé dès que votre carte ACLS renouvelée sera téléversée.", cc_btn:"Réserver",
+  regs_p:"Un seul profil, vérifié auprès de chaque ordre où vous détenez un permis.", coast_h:"De Peggy’s Cove à la vallée du Fraser", coast_reg:"Permis vérifiés auprès du", photos_by:"Photographie",
+  phys_h:"De la vérification au paiement, sans la paperasse", phys_p:"Un remplacement est court. Les formalités ne devraient pas durer plus longtemps.",
+  s1_h:"Vérifiez une fois", s1_p:"Ajoutez vos permis, votre adhésion à l’ACPM, vos certifications et formations. Les permis sont vérifiés auprès du tableau de l’ordre, et vous êtes avisé avant toute échéance.",
+  s2_h:"Réservez ce qui vous convient", s2_p:"Voyez votre revenu net avant de réserver, que la clinique paie au tarif journalier ou à l’acte moins les frais. Chaque réservation inclut une entente écrite.",
+  s3_h:"Soyez payé à temps", s3_p:"Soumettez votre feuille de temps, la clinique l’approuve et une facture est émise pour vous. Le paiement est dû sous 14 jours, ou choisissez le paiement le lendemain.",
+  clin_h:"Comblez un besoin en quelques heures", clin_p:"Publiez une fois. Relève l’offre d’abord à vos propres remplaçants, puis aux médecins vérifiés détenant un permis dans votre province.",
+  f1_h:"Vos remplaçants d’abord", f1_p:"Chaque clinique garde une banque privée de médecins de confiance, qui voient les nouveaux remplacements en premier.",
+  f2_h:"Des candidatures expliquées", f2_p:"Chaque suggestion indique ses raisons : permis dans votre province, ACPM à jour, connaît votre DME. La décision vous revient.",
+  f3_h:"Ententes et factures prises en charge", f3_p:"Portée, garde, frais et modalités de paiement sont écrits dans chaque réservation. Approuver une feuille de temps émet la facture.",
+  f4_h:"Aucune donnée de patient", f4_p:"Le travail clinique reste dans votre DME. Relève ne conserve que des données sur l’effectif.",
+  mini_h:"Remplacement du Dr Baker, du 23 au 27 novembre", mini_s:"Équipe de santé familiale Danforth",
+  law_h:"Conçu selon le droit canadien", law_p:"La médecine est réglementée province par province. Le produit l’applique au lieu de le laisser à une liste de contrôle.",
+  l1_h:"Permis et responsabilité", l1_p:"Un remplacement n’est réservable que si vous détenez un permis là où il a lieu et que votre protection de l’ACPM couvre jusqu’au dernier jour. La reconnaissance automatique de l’Ontario pour les médecins autorisés ailleurs au Canada est présentée comme une étape à terminer avant de commencer.",
+  l2_h:"Responsabilité professionnelle", l2_p:"Les dates de l’adhésion à l’ACPM sont vérifiées pour chaque remplacement. Si la protection prend fin en cours de route, la réservation est impossible.",
+  l3_h:"Vie privée", l3_p:"Les données sont hébergées au Canada, dans la région de Montréal. Relève respecte la LPRPDE et se prépare au projet de loi C-36. Les utilisateurs du Québec sont couverts par une évaluation des facteurs relatifs à la vie privée selon la Loi 25 et un service entièrement en français.",
+  l4_h:"Renseignements de santé", l4_p:"Aucun renseignement sur les patients n’entre dans la plateforme : les obligations des cliniques en vertu de la LPRPS, de la HIA et des lois semblables restent liées à leur DME.",
+  l5_h:"Traitement équitable", l5_p:"Si un compte est restreint, le médecin reçoit des motifs écrits, un préavis et un droit d’appel auprès d’une personne, conformément à la loi ontarienne sur les droits des travailleurs de plateformes numériques.",
+  l6_h:"Registres", l6_p:"Les réservations, les changements de titres et les recherches de candidats sont consignés dans un journal permanent. Les médecins peuvent exporter tout ce qui les concerne.",
+  law_note:"Ce résumé décrit la conception du produit. Il ne constitue pas un avis juridique.",
+  price_h:"Gratuit pour les médecins. Les cliniques paient quand un remplacement est comblé.",
+  p1_t:"Médecins", p1_a:"Gratuit", p1_l:["Remplacements filtrés selon vos permis","Portefeuille de titres avec rappels d’échéance","Ententes et factures écrites","Paiement le lendemain en option"], p1_b:"Créer un compte médecin",
+  p2_t:"Cliniques", p2_a:"Par remplacement comblé", p2_d:"Aucun abonnement. Tarifs pilotes pour les équipes Santé Ontario et les divisions de médecine familiale.", p2_l:["Banque privée de remplaçants","Candidats classés avec leurs raisons","Feuilles de temps, approbations et facturation","Journal d’audit et rapports"], p2_b:"Créer un compte clinique",
+  foot_l:"Hébergé au Canada. Service bilingue.",
+  a_title:"Se connecter à Relève", a_new:"Créer un compte", a_email:"Courriel", a_pw:"Mot de passe", a_name:"Nom complet", a_role:"Je suis", a_phys:"Médecin", a_clinic:"Équipe de clinique",
+  a_go:"Se connecter", a_create:"Créer le compte", a_demo:"Explorer avec des données d’exemple", a_demo_p:"La base de données n’est pas accessible depuis cet aperçu. Vous pouvez essayer chaque écran avec des données d’exemple.",
+  a_quote:"Permis, protection de l’ACPM et formations sont vérifiés avant chaque réservation, dans chaque province et territoire.",
+  t_shifts:"Remplacements", t_bookings:"Réservations", t_pay:"Paiements", t_creds:"Titres", t_account:"Compte", t_cshifts:"Remplacements", t_ctime:"Feuilles de temps", t_verify:"Vérification",
+  demo_strip:"Vous consultez des données d’exemple. La version hébergée se connecte à la base de données canadienne.", demo_exit:"Quitter la démo"
+ }
+};
+
+/* ============ State & helpers ============ */
+const S = { lang:"en", mode:"checking", me:null, route:"home", sel:null, cshift:null, filt:{prov:"all",only:false,sort:"date"}, authTab:"in", authRole:"clinician", navOpen:false };
+try{ const v=localStorage.getItem("releve.lang"); if(v==="fr"||v==="en") S.lang=v; else if(/^fr/i.test(navigator.language||"")) S.lang="fr"; }catch(e){ if(/^fr/i.test(navigator.language||"")) S.lang="fr"; }
+const t = k => (COPY[S.lang] && COPY[S.lang][k]) ?? COPY.en[k] ?? k;
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const loc = () => S.lang==="fr" ? "fr-CA" : "en-CA";
+const money = n => n==null ? "—" : new Intl.NumberFormat(loc(),{style:"currency",currency:"CAD",maximumFractionDigits:0}).format(Number(n));
+const d8 = s => new Date(String(s).slice(0,10)+"T12:00:00");
+const fdate = (s,o={day:"numeric",month:"short"}) => s ? d8(s).toLocaleDateString(loc(),o) : "—";
+const frange = (a,b) => { const y = d8(a).getFullYear()!==d8(b).getFullYear(); return fdate(a,y?{day:"numeric",month:"short",year:"numeric"}:{day:"numeric",month:"short"})+" – "+fdate(b,{day:"numeric",month:"short",year:"numeric"}); };
+const ndays = (a,b) => Math.round((d8(b)-d8(a))/864e5)+1;
+const provName = c => PROV[c] ? PROV[c][S.lang] : c;
+const today = () => S.mode==="demo" ? "2026-10-18" : new Date().toLocaleDateString("en-CA");
+const first = v => Array.isArray(v) ? (v[0]||null) : (v||null);
+const $ = id => document.getElementById(id);
+
+const ICON = {
+  ok:'<svg class="ic ok" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="currentColor" opacity=".14"/><path d="M6 10.4l2.6 2.6L14.2 7.4" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  warn:'<svg class="ic warn" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="currentColor" opacity=".16"/><path d="M10 5.5v5.2l3 1.8" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>',
+  bad:'<svg class="ic bad" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="currentColor" opacity=".14"/><path d="M7 7l6 6M13 7l-6 6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>',
+  info:'<svg class="ic info" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".5"/><circle cx="10" cy="10" r="2.6" fill="currentColor"/></svg>',
+  mute:'<svg class="ic" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8.3" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".5"/></svg>'
+};
+const LOGO = '<svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><rect width="28" height="28" rx="6" fill="var(--flag)"/><path d="M8 20V8h6.2a3.8 3.8 0 0 1 0 7.6H8m6.2 0L19.5 20" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+/* Licensed photography. Unsplash License / Pexels License: free for commercial use, attribution appreciated.
+   For production, download these files into /img and change src to the local path. */
+const PH = {
+  road:{src:"https://images.unsplash.com/photo-1638306044086-836d3d5c2642?auto=format&fit=crop&w=1400&q=72", alt:"Snow-lined highway through forest and mountains in winter, Canada", place:{en:"Winter highway, Canada",fr:"Route en hiver, Canada"}, by:"Myriam Olmz", lib:"Unsplash", page:"https://unsplash.com/photos/U2o5rjrSr2Q"},
+  cove:{src:"https://images.unsplash.com/photo-1545052245-315365f9cf82?auto=format&fit=crop&w=900&q=72", alt:"Grey sea and granite shore at Peggy’s Cove, Nova Scotia", place:{en:"Peggy’s Cove, Nova Scotia",fr:"Peggy’s Cove, Nouvelle-Écosse"}, by:"matthew smith", lib:"Unsplash", page:"https://unsplash.com/photos/-cDhdCEJryI", college:"CPSNS"},
+  mtl:{src:"https://images.unsplash.com/photo-1612442857712-dd586c66a3f1?auto=format&fit=crop&w=900&q=72", alt:"Snow-covered street beside brick buildings in Montréal", place:{en:"Montréal, Québec",fr:"Montréal, Québec"}, by:"Etienne Delorieux", lib:"Unsplash", page:"https://unsplash.com/photos/r-XORSP-t2I", college:"CMQ"},
+  bc:{src:"https://images.unsplash.com/photo-1606770660533-1dda90cb47f8?auto=format&fit=crop&w=1200&q=72", alt:"Sunrise over mountains and a river near Chilliwack, British Columbia", place:{en:"Chilliwack, British Columbia",fr:"Chilliwack, Colombie-Britannique"}, by:"Megan te Boekhorst", lib:"Unsplash", page:"https://unsplash.com/photos/6almqMlQgxA", college:"CPSBC"},
+  desk:{src:"https://images.pexels.com/photos/48604/pexels-photo-48604.jpeg?auto=compress&cs=tinysrgb&w=1200", alt:"Stethoscope beside a laptop on a white desk", place:{en:"Clinic desk",fr:"Bureau de clinique"}, by:"Negative Space", lib:"Pexels", page:"https://www.pexels.com/photo/48604/"}
+};
+const img = (k, eager=false) => `<img src="${PH[k].src}" alt="${esc(PH[k].alt)}" ${eager?'fetchpriority="high"':'loading="lazy"'} decoding="async" data-photo>`;
+const credit = k => `${S.lang==="fr"?"Photo :":"Photo:"} <a href="${PH[k].page}" target="_blank" rel="noopener">${esc(PH[k].by)}, ${PH[k].lib}</a>`;
+function wirePhotos(){
+  document.querySelectorAll("img[data-photo]").forEach(i=>{
+    const fail=()=>{ const h=i.closest("[data-ph]"); if(h) h.classList.add("nophoto"); };
+    if(i.complete && i.naturalWidth===0) fail(); else i.addEventListener("error",fail,{once:true});
+  });
+}
+const REASON_FR = [
+  [/^(.+) licence verified$/, m=>`Permis ${m[1]} vérifié`],
+  [/^(.+) licence expires before the shift ends$/, m=>`Le permis ${m[1]} expire avant la fin du remplacement`],
+  [/^Needs CPSO registration through automatic recognition before start$/, ()=>"Inscription au CPSO par reconnaissance automatique requise avant le début"],
+  [/^Needs a (.+) licence$/, m=>`Permis ${m[1]} requis`],
+  [/^CMPA covers the dates$/, ()=>"L’ACPM couvre les dates"],
+  [/^CMPA cover lapses before the shift ends$/, ()=>"La protection de l’ACPM prend fin avant la fin du remplacement"],
+  [/^ACLS current$/, ()=>"ACLS à jour"],
+  [/^ACLS renewal needed before start$/, ()=>"Renouvellement ACLS requis avant le début"],
+  [/^Knows (.+)$/, m=>`Connaît ${m[1]}`],
+  [/^Works in French$/, ()=>"Travaille en français"],
+  [/^French-language clinic$/, ()=>"Clinique francophone"],
+  [/^Account is (.+)$/, m=>`Compte ${({restricted:"restreint",suspended:"suspendu"})[m[1]]||m[1]}`]
+];
+const rt = s => { if(S.lang!=="fr") return s; for(const [re,f] of REASON_FR){ const m=String(s).match(re); if(m) return f(m); } return s; };
+function toast(m){ const el=$("toast"); el.textContent=m; el.hidden=false; clearTimeout(toast._t); toast._t=setTimeout(()=>el.hidden=true,3200); }
+const dlg=$("dlg");
+function openDialog(html, bind){ $("dlg-body").innerHTML=html; dlg.showModal(); bind && bind($("dlg-body")); }
+function closeDialog(){ dlg.close(); }
+
+/* ============ Demo data (mirrors the database seed) ============ */
+function demoSeed(){
+  const C = (id,name,cert,emrs,langs,rating,n)=>({id,full_name:name,certification:cert,specialty:"Family Medicine",emrs,languages:langs,rating,completed_shifts:n,standing:"good",discoverable:true});
+  const D = {
+    profiles:{
+      "c1":{id:"c1",role:"clinician",full_name:"Dr. Amara Okafor"}, "c2":{id:"c2",role:"clinician",full_name:"Dr. Jean-Luc Tremblay"},
+      "c3":{id:"c3",role:"clinician",full_name:"Dr. Priya Raman"}, "c4":{id:"c4",role:"clinician",full_name:"Dr. Ethan MacLeod"},
+      "c5":{id:"c5",role:"clinician",full_name:"Dr. Sofia Mendes"}, "k1":{id:"k1",role:"clinic_admin",full_name:"Maya Chen"},
+      "k2":{id:"k2",role:"clinic_admin",full_name:"Regional Scheduling Team"}, "a1":{id:"a1",role:"platform_admin",full_name:"Relève Operations"}
+    },
+    clinicians:{
+      c1:C("c1","Dr. Amara Okafor","CCFP",["Accuro","OSCAR Pro","PS Suite"],["English","French"],4.9,31),
+      c2:C("c2","Dr. Jean-Luc Tremblay","CCFP",["Myle","Accuro"],["French","English"],4.8,58),
+      c3:C("c3","Dr. Priya Raman","CCFP",["PS Suite"],["English","Tamil"],4.7,12),
+      c4:C("c4","Dr. Ethan MacLeod","CCFP(EM)",["Med Access","OSCAR Pro"],["English"],4.6,44),
+      c5:C("c5","Dr. Sofia Mendes","CCFP",["Accuro","Med Access"],["English","Portuguese"],4.9,22)
+    },
+    clinics:{
+      d1:{id:"d1",name:"Danforth Family Health Team",city:"Toronto",province:"ON"}, d2:{id:"d2",name:"Bulkley Valley Clinic",city:"Smithers",province:"BC"},
+      d3:{id:"d3",name:"Clinique médicale Saint-Roch",city:"Québec",province:"QC"}, d4:{id:"d4",name:"Red Deer Primary Care Network",city:"Red Deer",province:"AB"},
+      d5:{id:"d5",name:"Kingston Community Health Centre",city:"Kingston",province:"ON"}, d6:{id:"d6",name:"Fort McMurray Wellness Clinic",city:"Fort McMurray",province:"AB"},
+      d7:{id:"d7",name:"Sea to Sky Family Practice",city:"Squamish",province:"BC"}, d8:{id:"d8",name:"North End Community Clinic",city:"Halifax",province:"NS"}
+    },
+    members:[{clinic_id:"d1",user_id:"k1"},...["d2","d3","d4","d5","d6","d7","d8"].map(c=>({clinic_id:c,user_id:"k2"}))],
+    creds:[], shifts:[], bookings:[], timesheets:[], invoices:[], bank:[{clinic_id:"d1",clinician_id:"c1"},{clinic_id:"d1",clinician_id:"c3"}], invitations:[], actions:[], seq:1001
+  };
+  let n=0; const cr=(cid,type,label,prov,ref,exp,st="verified",src="Public register")=>D.creds.push({id:"cr"+(++n),clinician_id:cid,type,label,province:prov,reference:ref,expires_on:exp,verification_status:st,verification_source:st==="verified"?src:null});
+  cr("c1","licence","CPSBC independent practice licence","BC","CPSBC 41872","2027-02-28","verified","CPSBC public register");
+  cr("c1","licence","CPSO certificate of registration","ON","CPSO 118204","2027-06-30","verified","CPSO public register");
+  cr("c1","liability","CMPA membership",null,"CMPA 0739215","2026-12-31","verified","CMPA proof of membership");
+  cr("c1","certification","CCFP",null,"CFPC","2028-06-30","verified","CFPC directory");
+  cr("c1","course","ACLS provider",null,"Heart & Stroke","2026-11-02","verified","Card reviewed");
+  cr("c1","billing","BC MSP practitioner number","BC","MSP K9031",null,"pending");
+  cr("c2","licence","Permis d’exercice CMQ","QC","CMQ 19-4471","2027-03-31"); cr("c2","licence","CPSO certificate of registration","ON","CPSO 120991","2027-06-30");
+  cr("c2","liability","CMPA membership",null,"CMPA 0815532","2027-12-31"); cr("c2","course","ACLS provider",null,"Heart & Stroke","2027-05-10");
+  cr("c3","licence","CPSO certificate of registration","ON","CPSO 131207","2027-06-30"); cr("c3","liability","CMPA membership",null,"CMPA 0902210","2026-12-31");
+  cr("c4","licence","CPSNS full licence","NS","CPSNS 17733","2027-09-30"); cr("c4","licence","CPSBC independent practice licence","BC","CPSBC 39010","2027-02-28");
+  cr("c4","licence","CPSA practice permit","AB","CPSA 022871","2026-12-31"); cr("c4","liability","CMPA membership",null,"CMPA 0688104","2027-12-31"); cr("c4","course","ACLS provider",null,"Heart & Stroke","2027-01-20");
+  cr("c5","licence","CPSA practice permit","AB","CPSA 024417","2026-12-31"); cr("c5","liability","CMPA membership",null,"CMPA 0970033","2026-10-31"); cr("c5","course","ACLS provider",null,"Heart & Stroke","2027-03-01");
+  const sh=(id,c,a,b,pm,rate,est,oh,tr,emr,scope,oc,acls,urg,lang,prog,status="open")=>D.shifts.push({id,clinic_id:c,start_date:a,end_date:b,pay_model:pm,daily_rate:rate,est_billings:est,overhead_pct:oh,travel_allowance:tr,emr,scope,on_call:oc,requires_acls:acls,urgent:urg,language:lang,program:prog,status});
+  sh("s1","d1","2026-10-27","2026-10-31","ffs",null,9800,30,0,"Accuro","Full-scope family practice, all ages. Spaced 15-minute bookings.",false,false,false,"en",null);
+  sh("s2","d2","2026-11-09","2026-11-20","per_diem",1400,null,null,1800,"OSCAR Pro","Clinic days plus emergency department coverage.",true,true,true,"en","Rural GP Locum Program");
+  sh("s3","d3","2026-11-03","2026-11-07","per_diem",1250,null,null,0,"Myle","Sans rendez-vous et suivis de patients inscrits.",false,false,false,"fr",null);
+  sh("s4","d4","2026-10-24","2026-10-25","per_diem",1500,null,null,400,"Med Access","Weekend urgent care, 08:00 to 20:00.",false,true,true,"en",null);
+  sh("s5","d5","2026-12-07","2026-12-18","per_diem",1350,null,null,350,"PS Suite","Salaried CHC model, complex care panel.",false,false,false,"en",null);
+  sh("s6","d6","2027-01-11","2027-01-22","ffs",null,24000,25,1500,"Accuro","Family practice and hospital rounds.",true,true,false,"en",null);
+  sh("s7","d8","2026-11-16","2026-11-27","per_diem",1300,null,null,900,"Med Access","Community primary care, walk-in afternoons.",false,false,false,"en",null);
+  sh("s8","d1","2026-11-23","2026-11-27","per_diem",1400,null,null,0,"Accuro","Covering Dr. Baker: two clinic days plus three half-days.",false,false,false,"en",null);
+  sh("p1","d1","2026-10-05","2026-10-09","ffs",null,9100,30,0,"Accuro","Full-scope family practice.",false,false,false,"en",null,"completed");
+  sh("p2","d7","2026-10-13","2026-10-16","per_diem",1350,null,null,0,"OSCAR Pro","Longitudinal family practice.",false,false,false,"en",null,"filled");
+  D.bookings.push({id:"b1",shift_id:"p1",clinician_id:"c1",status:"completed",agreement:{pay_model:"ffs",est_billings:9100,overhead_pct:30,travel_allowance:0,payment_terms_days:14}});
+  D.bookings.push({id:"b2",shift_id:"p2",clinician_id:"c1",status:"confirmed",agreement:{pay_model:"per_diem",daily_rate:1350,travel_allowance:0,payment_terms_days:14}});
+  D.timesheets.push({id:"t1",booking_id:"b1",days_worked:5,billings_reported:9420,status:"approved",submitted_at:"2026-10-09",early_pay_requested:false,notes:null});
+  D.invoices.push({id:"i1",booking_id:"b1",number:"RLV-2026-1000",gross_amount:6594,early_pay_fee:0,net_amount:6594,issued_at:"2026-10-10",due_on:"2026-10-24",paid_at:"2026-10-14"});
+  return D;
+}
+let D = demoSeed();
+
+function netOf(s){ const days=ndays(s.start_date,s.end_date); return Math.round(((s.pay_model==="per_diem") ? s.daily_rate*days : s.est_billings*(1-s.overhead_pct/100)) + (s.travel_allowance||0)); }
+function demoElig(s, cid){
+  const c=D.clinicians[cid], prov=D.clinics[s.clinic_id].province, col=PROV[prov].college;
+  const cr=D.creds.filter(x=>x.clinician_id===cid && x.verification_status==="verified");
+  let lvl="ok"; const rs=[]; const up=l=>{ if(lvl==="ok") lvl=l; }; const bad=m=>{ lvl="bad"; rs.push({k:"bad",t:m}); };
+  if(c.standing!=="good") bad("Account is "+c.standing);
+  const lic=cr.filter(x=>x.type==="licence" && x.province===prov);
+  if(lic.length){ if(lic.some(x=>!x.expires_on || x.expires_on>=s.end_date)) rs.push({k:"ok",t:col+" licence verified"}); else bad(col+" licence expires before the shift ends"); }
+  else if(prov==="ON" && cr.some(x=>x.type==="licence" && (!x.expires_on || x.expires_on>=s.end_date))){ up("warn"); rs.push({k:"warn",t:"Needs CPSO registration through automatic recognition before start"}); }
+  else bad("Needs a "+col+" licence");
+  if(cr.some(x=>x.type==="liability" && x.expires_on>=s.end_date)) rs.push({k:"ok",t:"CMPA covers the dates"}); else bad("CMPA cover lapses before the shift ends");
+  if(s.requires_acls){ if(cr.some(x=>x.type==="course" && /ACLS/i.test(x.label) && x.expires_on>=s.end_date)) rs.push({k:"ok",t:"ACLS current"}); else { up("warn"); rs.push({k:"warn",t:"ACLS renewal needed before start"}); } }
+  if(s.emr && c.emrs.includes(s.emr)) rs.push({k:"info",t:"Knows "+s.emr});
+  if(s.language==="fr"){ if(c.languages.some(l=>/^fr/i.test(l))) rs.push({k:"info",t:"Works in French"}); else { up("warn"); rs.push({k:"warn",t:"French-language clinic"}); } }
+  return {level:lvl,reasons:rs};
+}
+const demoShiftOut = s => { const c=D.clinics[s.clinic_id]; return {...s, clinic_name:c.name, city:c.city, province:c.province, days:ndays(s.start_date,s.end_date), net_estimate:netOf(s)}; };
+const fail = m => { throw new Error(m); };
+
+const DemoAPI = {
+  async signIn(){ fail("Sign-in needs the live database. Use the sample accounts below."); },
+  async signUp(){ fail("Account creation needs the live database."); },
+  async demoAs(id){ S.me = await this.loadMe(id); },
+  async signOut(){ S.me=null; D=demoSeed(); },
+  async loadMe(id){ const p=D.profiles[id]; return {id, role:p.role, full_name:p.full_name, clinician:D.clinicians[id]||null, clinics:D.members.filter(m=>m.user_id===id).map(m=>D.clinics[m.clinic_id])}; },
+  async shiftBoard(){ const id=S.me.id; return D.shifts.filter(s=>s.status==="open" && s.start_date>=today()).map(s=>({...demoShiftOut(s), eligibility:demoElig(s,id)})).sort((a,b)=>a.start_date.localeCompare(b.start_date)); },
+  async book(sid){ const s=D.shifts.find(x=>x.id===sid); if(!s||s.status!=="open") fail("This shift is no longer available");
+    const e=demoElig(s,S.me.id); if(e.level==="bad") fail("You are not eligible for this shift: "+e.reasons.filter(r=>r.k==="bad").map(r=>r.t).join("; "));
+    const b={id:"b"+Date.now(),shift_id:sid,clinician_id:S.me.id,status:e.level==="warn"?"held":"confirmed",agreement:{pay_model:s.pay_model,daily_rate:s.daily_rate,est_billings:s.est_billings,overhead_pct:s.overhead_pct,travel_allowance:s.travel_allowance,payment_terms_days:14}};
+    D.bookings.push(b); s.status="filled"; return b; },
+  async myBookings(){ return D.bookings.filter(b=>b.clinician_id===S.me.id).map(b=>{ const s=demoShiftOut(D.shifts.find(x=>x.id===b.shift_id)); return {...b, shift:s, timesheet:D.timesheets.find(t=>t.booking_id===b.id)||null, invoice:D.invoices.find(i=>i.booking_id===b.id)||null}; }).sort((a,b)=>b.shift.start_date.localeCompare(a.shift.start_date)); },
+  async cancel(bid,reason){ if(!reason||reason.trim().length<5) fail("Give a reason for cancelling"); const b=D.bookings.find(x=>x.id===bid); b.status="cancelled"; const s=D.shifts.find(x=>x.id===b.shift_id); s.status = s.start_date>today() ? "open" : "cancelled"; },
+  async submitTimesheet(bid,days,bill,notes,early){ const b=D.bookings.find(x=>x.id===bid); const s=D.shifts.find(x=>x.id===b.shift_id);
+    if(days>ndays(s.start_date,s.end_date)) fail("Days worked exceeds the booked dates"); if(s.pay_model==="ffs" && !(bill>0)) fail("Enter the billings for a fee-for-service shift");
+    D.timesheets.push({id:"t"+Date.now(),booking_id:bid,days_worked:days,billings_reported:bill,notes,early_pay_requested:!!early,status:"submitted",submitted_at:today()}); b.status="completed"; },
+  async credentials(){ return D.creds.filter(c=>c.clinician_id===S.me.id); },
+  async addCredential(c){ D.creds.push({...c,id:"cr"+Date.now(),clinician_id:S.me.id,verification_status:"pending"}); },
+  async standing(){ return {clinician:D.clinicians[S.me.id], actions:D.actions.filter(a=>a.clinician_id===S.me.id)}; },
+  async exportData(){ return {exported_at:new Date().toISOString(), profile:D.profiles[S.me.id], clinician:D.clinicians[S.me.id], credentials:D.creds.filter(c=>c.clinician_id===S.me.id), bookings:D.bookings.filter(b=>b.clinician_id===S.me.id)}; },
+  async requestDeletion(){ return true; },
+  async createClinic(){ fail("Needs the live database."); },
+  async clinicShifts(){ const ids=S.me.clinics.map(c=>c.id); return D.shifts.filter(s=>ids.includes(s.clinic_id)).map(s=>{ const b=D.bookings.find(x=>x.shift_id===s.id && x.status!=="cancelled"); return {...demoShiftOut(s), booking:b?{id:b.id,status:b.status,clinician_name:D.profiles[b.clinician_id].full_name}:null}; }).sort((a,b)=>b.start_date.localeCompare(a.start_date)); },
+  async postShift(x){ D.shifts.push({...x,id:"s"+Date.now(),status:"open"}); },
+  async rank(sid){ const s=D.shifts.find(x=>x.id===sid); return Object.values(D.clinicians).filter(c=>c.discoverable&&c.standing==="good").map(c=>{ const el=demoElig(s,c.id); const bank=D.bank.some(b=>b.clinic_id===s.clinic_id&&b.clinician_id===c.id);
+      let raw=(el.level==="ok"?60:el.level==="warn"?35:0)+el.reasons.filter(r=>r.k==="info").length*6+(bank?12:0)+Math.round((c.rating-4)*15)+Math.min(10,Math.floor(c.completed_shifts/5)); raw=Math.max(0,Math.min(100,raw));
+      const score=el.level==="bad"?Math.min(raw,25):el.level==="warn"?Math.min(raw,59):Math.max(raw,60);
+      return {clinician_id:c.id,full_name:c.full_name,score,level:el.level,reasons:el.reasons,rating:c.rating,completed_shifts:c.completed_shifts,in_bank:bank,invited:D.invitations.some(i=>i.shift_id===sid&&i.clinician_id===c.id)}; })
+      .sort((a,b)=>({ok:0,warn:1,bad:2}[a.level]-{ok:0,warn:1,bad:2}[b.level])||b.score-a.score); },
+  async invite(sid,cid){ D.invitations.push({shift_id:sid,clinician_id:cid}); },
+  async clinicTimesheets(){ const ids=S.me.clinics.map(c=>c.id); return D.timesheets.map(ts=>{ const b=D.bookings.find(x=>x.id===ts.booking_id); const s=D.shifts.find(x=>x.id===b.shift_id); if(!ids.includes(s.clinic_id)) return null;
+      return {...ts, booking:b, shift:{...s, clinic_name:D.clinics[s.clinic_id].name}, clinician_name:D.profiles[b.clinician_id].full_name, invoice:D.invoices.find(i=>i.booking_id===b.id)||null}; }).filter(Boolean); },
+  async approve(tid){ const ts=D.timesheets.find(x=>x.id===tid); const b=D.bookings.find(x=>x.id===ts.booking_id); const a=b.agreement;
+    const gross=Math.round(((a.pay_model==="per_diem")?a.daily_rate*ts.days_worked:ts.billings_reported*(1-a.overhead_pct/100))+(a.travel_allowance||0));
+    ts.status="approved"; const due=new Date(d8(today()).getTime()+(ts.early_pay_requested?1:14)*864e5).toLocaleDateString("en-CA");
+    D.invoices.push({id:"i"+Date.now(),booking_id:b.id,number:"RLV-2026-"+(D.seq++),gross_amount:gross,early_pay_fee:0,net_amount:gross,issued_at:today(),due_on:due,paid_at:null}); },
+  async dispute(tid,reason){ if(!reason||reason.trim().length<10) fail("Explain what needs correcting"); const ts=D.timesheets.find(x=>x.id===tid); ts.status="disputed"; ts.dispute_reason=reason; D.bookings.find(b=>b.id===ts.booking_id).status="confirmed"; },
+  async markPaid(iid){ D.invoices.find(i=>i.id===iid).paid_at=today(); },
+  async pendingCredentials(){ return D.creds.filter(c=>c.verification_status==="pending").map(c=>({...c, clinician_name:D.profiles[c.clinician_id].full_name})); },
+  async verify(id,status,source){ const c=D.creds.find(x=>x.id===id); c.verification_status=status; c.verification_source=source; }
+};
+
+/* ============ Live API (Supabase) ============ */
+let sb = null;
+const chk = ({data,error}) => { if(error) throw new Error(error.message); return data; };
+const LiveAPI = {
+  async signIn(email,pw){ chk(await sb.auth.signInWithPassword({email,password:pw})); S.me = await this.loadMe(); },
+  async signUp(email,pw,name,role){ chk(await sb.auth.signUp({email,password:pw,options:{data:{full_name:name,role,lang:S.lang},emailRedirectTo:location.origin+location.pathname}})); },
+  async signOut(){ await sb.auth.signOut(); S.me=null; },
+  async loadMe(){
+    const { data:{ user } } = await sb.auth.getUser(); if(!user) return null;
+    const p = chk(await sb.from("profiles").select("*").eq("id",user.id).single());
+    const c = p.role==="clinician" ? chk(await sb.from("clinicians").select("*").eq("id",user.id).maybeSingle()) : null;
+    const m = chk(await sb.from("clinic_members").select("member_role, clinics(id,name,city,province)").eq("user_id",user.id));
+    return {id:user.id, email:user.email, role:p.role, full_name:p.full_name, clinician:c, clinics:m.map(x=>x.clinics).filter(Boolean)};
+  },
+  async shiftBoard(){ return chk(await sb.rpc("shift_board")); },
+  async book(sid){ return chk(await sb.rpc("book_shift",{p_shift:sid,p_accept_terms:true})); },
+  async myBookings(){
+    const rows = chk(await sb.from("bookings").select("*, shifts(*, clinics(name,city,province)), timesheets(*), invoices(*)").eq("clinician_id",S.me.id));
+    return rows.map(b=>{ const s=b.shifts, c=s.clinics; return {...b, shift:{...s, clinic_name:c.name, city:c.city, province:c.province, days:ndays(s.start_date,s.end_date), net_estimate:netOf(s)}, timesheet:first(b.timesheets), invoice:first(b.invoices)}; })
+      .sort((a,b)=>b.shift.start_date.localeCompare(a.shift.start_date));
+  },
+  async cancel(bid,reason){ chk(await sb.rpc("cancel_booking",{p_booking:bid,p_reason:reason})); },
+  async submitTimesheet(bid,days,bill,notes,early){ chk(await sb.rpc("submit_timesheet",{p_booking:bid,p_days:days,p_billings:bill,p_notes:notes,p_early_pay:early})); },
+  async credentials(){ return chk(await sb.from("credentials").select("*").eq("clinician_id",S.me.id).order("type")); },
+  async addCredential(c){ chk(await sb.from("credentials").insert({...c, clinician_id:S.me.id})); },
+  async standing(){ return { clinician: chk(await sb.from("clinicians").select("*").eq("id",S.me.id).single()), actions: chk(await sb.from("account_actions").select("*").eq("clinician_id",S.me.id).order("created_at",{ascending:false})) }; },
+  async exportData(){ return chk(await sb.rpc("export_my_data")); },
+  async requestDeletion(note){ chk(await sb.rpc("request_account_deletion",{p_note:note})); },
+  async createClinic(x){ chk(await sb.from("clinics").insert(x)); S.me = await this.loadMe(); },
+  async clinicShifts(){
+    const ids=S.me.clinics.map(c=>c.id); if(!ids.length) return [];
+    const rows = chk(await sb.from("shifts").select("*, clinics(name,city,province), bookings(id,status,clinicians(profiles(full_name)))").in("clinic_id",ids).order("start_date",{ascending:false}));
+    return rows.map(s=>{ const b=(s.bookings||[]).find(x=>x.status!=="cancelled"); return {...s, clinic_name:s.clinics.name, city:s.clinics.city, province:s.clinics.province, days:ndays(s.start_date,s.end_date), net_estimate:netOf(s), booking:b?{id:b.id,status:b.status,clinician_name:b.clinicians?.profiles?.full_name||"Physician"}:null}; });
+  },
+  async postShift(x){ chk(await sb.from("shifts").insert(x)); },
+  async rank(sid){ return chk(await sb.rpc("rank_candidates",{p_shift:sid})); },
+  async invite(sid,cid){ chk(await sb.rpc("invite_clinician",{p_shift:sid,p_clinician:cid})); },
+  async clinicTimesheets(){
+    const ids=S.me.clinics.map(c=>c.id);
+    const rows = chk(await sb.from("timesheets").select("*, bookings(id,agreement,clinicians(profiles(full_name)),shifts(start_date,end_date,clinic_id,clinics(name)),invoices(*))").order("submitted_at",{ascending:false}));
+    return rows.filter(r=>ids.includes(r.bookings?.shifts?.clinic_id)).map(r=>({...r, booking:r.bookings, shift:{...r.bookings.shifts, clinic_name:r.bookings.shifts.clinics?.name}, clinician_name:r.bookings.clinicians?.profiles?.full_name||"Physician", invoice:first(r.bookings.invoices)}));
+  },
+  async approve(tid){ chk(await sb.rpc("approve_timesheet",{p_timesheet:tid})); },
+  async dispute(tid,reason){ chk(await sb.rpc("dispute_timesheet",{p_timesheet:tid,p_reason:reason})); },
+  async markPaid(iid){ chk(await sb.rpc("mark_invoice_paid",{p_invoice:iid})); },
+  async pendingCredentials(){ const r=chk(await sb.from("credentials").select("*, clinicians(profiles(full_name))").eq("verification_status","pending").order("created_at")); return r.map(c=>({...c, clinician_name:c.clinicians?.profiles?.full_name||"Physician"})); },
+  async verify(id,status,source){ chk(await sb.from("credentials").update({verification_status:status, verification_source:source}).eq("id",id)); }
+};
+const api = () => S.mode==="live" ? LiveAPI : DemoAPI;
+
+/* ============ Routing ============ */
+const APP_ROUTES = {
+  clinician:["shifts","bookings","pay","creds","account"],
+  clinic_admin:["cshifts","ctime"],
+  platform_admin:["verify","cshifts","ctime"]
+};
+function go(route){ S.route=route; S.navOpen=false; try{ history.replaceState(null,"","#"+route); }catch(e){} render(); window.scrollTo(0,0); }
+function homeRouteFor(me){ return APP_ROUTES[me.role][0]; }
+
+/* ============ Top bar ============ */
+function topBar(){
+  const inApp = !!S.me && S.route!=="home" && S.route!=="signin";
+  let nav = "";
+  if(inApp){ nav = APP_ROUTES[S.me.role].map(r=>`<button data-go="${r}" ${S.route===r?'aria-current="page"':""}>${t("t_"+r)}</button>`).join("") + `<button class="show-sm" id="signout-m">${t("signout")}</button>`; }
+  else { nav = [["physicians","nav_phys"],["clinics","nav_clin"],["law","nav_law"],["pricing","nav_price"]].map(([id,k])=>`<button data-scroll="${id}">${t(k)}</button>`).join(""); }
+  const right = S.me
+    ? `<span class="small muted hide-sm">${esc(S.me.full_name)}</span>${inApp?"":`<button class="btn sm primary" data-go="${homeRouteFor(S.me)}">${S.lang==="fr"?"Ouvrir l’application":"Open the app"}</button>`}<button class="btn sm quiet hide-sm" id="signout">${t("signout")}</button>`
+    : `<button class="btn sm quiet" data-go="signin">${t("signin")}</button><button class="btn sm primary hide-sm" data-auth="clinic_admin">${t("post")}</button>`;
+  return `<header class="top"><div class="wrap">
+    <button class="mark" data-go="${S.me&&inApp?homeRouteFor(S.me):"home"}" aria-label="${S.lang==="fr"?"Accueil Relève":"Relève home"}">${LOGO}<span>Relève</span></button>
+    <nav class="topnav ${S.navOpen?"open":""}" aria-label="Main">${nav}</nav>
+    <div class="top-right">
+      <button class="btn sm quiet lang-link" data-lang="${S.lang==="fr"?"en":"fr"}" lang="${S.lang==="fr"?"en":"fr"}"><span class="long">${S.lang==="fr"?"English":"Français"}</span><span class="short" aria-hidden="true">${S.lang==="fr"?"EN":"FR"}</span></button>
+      ${right}
+      <button class="btn sm quiet menu-btn" id="menu" aria-expanded="${S.navOpen}" aria-label="Menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 9h14M2 13h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+    </div></div></header>
+    ${S.mode==="demo" && S.me ? `<div class="demo-strip"><div class="wrap"><span>${t("demo_strip")}</span><button class="link small" id="demo-exit">${t("demo_exit")}</button></div></div>`:""}`;
+}
+
+/* ============ Marketing page ============ */
+function vHome(){
+  const L = l => l.map(x=>`<li>${esc(x)}</li>`).join("");
+  return `
+  <section class="hero"><div class="wrap">
+    <div>
+      <h1>${t("hero_h")}</h1>
+      <p class="lede">${t("hero_p")}</p>
+      <div class="ctas"><button class="btn lg primary" data-auth="clinician">${t("hero_c1")}</button><button class="btn lg" data-auth="clinic_admin">${t("hero_c2")}</button></div>
+      <p class="fine">${t("hero_fine")}</p>
+    </div>
+    <div class="hero-visual" data-ph>
+    <figure class="ph hero-ph">${img("road",true)}<figcaption>${esc(PH.road.place[S.lang])}. ${credit("road")}</figcaption></figure>
+    <article class="check-card" aria-label="Example eligibility check">
+      <div class="cc-head"><h3>Bulkley Valley Clinic</h3><p class="where">${t("cc_where")}</p></div>
+      <dl class="cc-facts">
+        <div><dt>${t("cc_dates")}</dt><dd>${t("cc_dates_v")}</dd></div>
+        <div><dt>${t("cc_pay")}</dt><dd>${t("cc_pay_v")}</dd></div>
+        <div><dt>${t("cc_travel")}</dt><dd>${t("cc_travel_v")}</dd></div>
+        <div><dt>${t("cc_take")}</dt><dd class="big num">${money(18600)}</dd></div>
+      </dl>
+      <ul class="cc-checks">
+        <li>${ICON.ok}<span>${t("cc_1")}</span></li>
+        <li>${ICON.ok}<span>${t("cc_2")}</span></li>
+        <li>${ICON.info}<span>${t("cc_3")}</span></li>
+        <li>${ICON.warn}<span>${t("cc_4")}</span></li>
+      </ul>
+      <div class="cc-foot"><p>${t("cc_foot")}</p><button class="btn primary" data-auth="clinician">${t("cc_btn")}</button></div>
+    </article>
+    </div>
+  </div></section>
+
+  <section class="coast"><div class="wrap">
+    <div class="coast-head"><h2>${t("coast_h")}</h2><p>${t("regs_p")}</p></div>
+    <div class="coast-grid">${["cove","mtl","bc"].map(k=>`<figure class="tile" data-ph>${img(k)}<figcaption><b>${esc(PH[k].place[S.lang])}</b><span>${t("coast_reg")} ${PH[k].college}</span><small>${credit(k)}</small></figcaption></figure>`).join("")}</div>
+  </div></section>
+
+  <section class="sec" id="physicians"><div class="wrap">
+    <div class="sec-head"><h2>${t("phys_h")}</h2></div>
+    <ol class="steps">
+      <li><span class="n">1</span><h3>${t("s1_h")}</h3><p>${t("s1_p")}</p></li>
+      <li><span class="n">2</span><h3>${t("s2_h")}</h3><p>${t("s2_p")}</p></li>
+      <li><span class="n">3</span><h3>${t("s3_h")}</h3><p>${t("s3_p")}</p></li>
+    </ol>
+  </div></section>
+
+  <section class="sec band" id="clinics"><div class="wrap">
+    <div class="sec-head"><h2>${t("clin_h")}</h2><p>${t("clin_p")}</p></div>
+    <div class="split">
+      <div class="mini" aria-label="Example candidate list">
+        <div class="mini-h"><div><b>${t("mini_h")}</b><div class="small muted">${t("mini_s")}</div></div></div>
+        <table><tbody>
+          <tr><td><b>Dr. Jean-Luc Tremblay</b><div class="why">${S.lang==="fr"?"Permis CPSO vérifié, l’ACPM couvre les dates, connaît Accuro":"CPSO licence verified, CMPA covers the dates, knows Accuro"}</div></td><td class="num" style="text-align:right"><span class="tag ok">${ICON.ok}88</span></td></tr>
+          <tr><td><b>Dr. Priya Raman</b><div class="why">${S.lang==="fr"?"Permis CPSO vérifié, l’ACPM couvre les dates, dans votre banque":"CPSO licence verified, CMPA covers the dates, in your locum bank"}</div></td><td class="num" style="text-align:right"><span class="tag ok">${ICON.ok}85</span></td></tr>
+          <tr><td><b>Dr. Ethan MacLeod</b><div class="why">${S.lang==="fr"?"Permis en N.-É., C.-B. et Alb.; inscription au CPSO requise":"Licensed in NS, BC and AB; needs CPSO registration first"}</div></td><td class="num" style="text-align:right"><span class="tag warn">${ICON.warn}52</span></td></tr>
+          <tr><td><b>Dr. Sofia Mendes</b><div class="why">${S.lang==="fr"?"La protection de l’ACPM prend fin avant le remplacement":"CMPA cover lapses before the shift ends"}</div></td><td class="num" style="text-align:right"><span class="tag bad">${ICON.bad}12</span></td></tr>
+        </tbody></table>
+      </div>
+      <div>
+      <figure class="ph side-ph" data-ph>${img("desk")}<figcaption>${credit("desk")}</figcaption></figure>
+      <div class="feat">
+        <div><h3>${t("f1_h")}</h3><p>${t("f1_p")}</p></div>
+        <div><h3>${t("f2_h")}</h3><p>${t("f2_p")}</p></div>
+        <div><h3>${t("f3_h")}</h3><p>${t("f3_p")}</p></div>
+      </div>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="sec" id="law"><div class="wrap">
+    <div class="sec-head"><h2>${t("law_h")}</h2><p>${t("law_p")}</p></div>
+    <div class="law">${[1,3,4,5,6].map(i=>`<div class="law-row"><h3>${t("l"+i+"_h")}</h3><p>${t("l"+i+"_p")}</p></div>`).join("")}</div>
+    <p class="law-note">${t("law_note")}</p>
+  </div></section>
+
+  <section class="sec band" id="pricing"><div class="wrap">
+    <div class="sec-head"><h2>${t("price_h")}</h2></div>
+    <div class="price">
+      <div class="plan"><h3>${t("p1_t")}</h3><div class="amt">${t("p1_a")}</div><ul>${L(COPY[S.lang].p1_l)}</ul><button class="btn primary" data-auth="clinician">${t("p1_b")}</button></div>
+      <div class="plan dark"><h3>${t("p2_t")}</h3><div class="amt">${t("p2_a")}</div><p class="muted">${t("p2_d")}</p><ul>${L(COPY[S.lang].p2_l)}</ul><button class="btn" data-auth="clinic_admin">${t("p2_b")}</button></div>
+    </div>
+  </div></section>
+
+  <footer class="foot"><div class="wrap"><span>© 2026 Relève. ${t("foot_l")}</span>    <p class="credits">${t("photos_by")}: ${Object.keys(PH).map(k=>`<a href="${PH[k].page}" target="_blank" rel="noopener">${esc(PH[k].by)}</a>`).join(", ")}. ${S.lang==="fr"?"Utilisées selon les licences Unsplash et Pexels.":"Used under the Unsplash and Pexels licences."}</p></div></footer>`;
+}
+
+/* ============ Sign in / create account ============ */
+function vSignin(){
+  const live = S.mode==="live", tab=S.authTab;
+  const form = `
+    <div class="seg" role="group" aria-label="Account"><button id="tab-in" aria-pressed="${tab==="in"}">${t("signin")}</button><button id="tab-up" aria-pressed="${tab==="up"}">${t("a_new")}</button></div>
+    <form id="auth-form" class="persona" style="gap:16px" novalidate>
+      ${tab==="up"?`
+        <div class="field"><label>${t("a_role")}</label><div class="seg" role="group"><button type="button" id="r-c" aria-pressed="${S.authRole==="clinician"}">${t("a_phys")}</button><button type="button" id="r-k" aria-pressed="${S.authRole==="clinic_admin"}">${t("a_clinic")}</button></div></div>
+        <div class="field"><label for="a-name">${t("a_name")}</label><input type="text" id="a-name" autocomplete="name" required></div>`:""}
+      <div class="field"><label for="a-email">${t("a_email")}</label><input type="email" id="a-email" autocomplete="email" required></div>
+      <div class="field"><label for="a-pw">${t("a_pw")}</label><input type="password" id="a-pw" autocomplete="${tab==="up"?"new-password":"current-password"}" minlength="8" required>${tab==="up"?`<span class="hint">${S.lang==="fr"?"Au moins 8 caractères.":"At least 8 characters."}</span>`:""}</div>
+      <p class="err" id="a-err" hidden></p><p class="ok-msg" id="a-ok" hidden></p>
+      <button class="btn primary lg" type="submit" ${live?"":"disabled"}>${tab==="up"?t("a_create"):t("a_go")}</button>
+    </form>`;
+  const demo = `
+    <div class="or">${live?(S.lang==="fr"?"ou":"or"):""}</div>
+    <div><h2 style="font-size:1.1rem">${t("a_demo")}</h2>${live?"":`<p class="small muted" style="margin-top:6px">${t("a_demo_p")}</p>`}</div>
+    <div class="persona">
+      <button data-persona="c1"><b>Dr. Amara Okafor</b><span>${S.lang==="fr"?"Médecin de famille, permis en C.-B. et en Ontario":"Family physician licensed in BC and Ontario"}</span><i>${t("a_phys")}</i></button>
+      <button data-persona="k1"><b>Maya Chen</b><span>${S.lang==="fr"?"Planification, Équipe de santé familiale Danforth":"Scheduling, Danforth Family Health Team"}</span><i>${t("a_clinic")}</i></button>
+      <button data-persona="a1"><b>Relève Operations</b><span>${S.lang==="fr"?"Vérification des titres":"Credential verification"}</span><i>${S.lang==="fr"?"Administration":"Admin"}</i></button>
+    </div>`;
+  return `<div class="auth">
+    <div class="auth-main"><div class="auth-box"><h1>${tab==="up"?t("a_new"):t("a_title")}</h1>${form}${demo}</div></div>
+    <aside class="auth-side" data-ph>${img("bc",true)}<blockquote>${t("a_quote")}</blockquote><p class="credit">${esc(PH.bc.place[S.lang])}. ${credit("bc")}</p></aside>
+  </div>`;
+}
+
+/* ============ Clinician views ============ */
+const levelVerdict = {
+  ok:{en:"You meet every requirement for this shift.",fr:"Vous remplissez toutes les exigences."},
+  warn:{en:"You can hold this shift now. It confirms once the item marked with a clock is cleared.",fr:"Vous pouvez réserver maintenant. La réservation sera confirmée une fois l’élément en attente réglé."},
+  bad:{en:"You can’t book this shift until the items marked with a cross are resolved.",fr:"Réservation impossible tant que les éléments marqués d’un X ne sont pas réglés."}
+};
+function payLine(s){ return s.pay_model==="per_diem" ? `${money(s.daily_rate)} ${S.lang==="fr"?"par jour, garantis":"a day, guaranteed"}` : `${S.lang==="fr"?"À l’acte, facturation estimée":"Fee-for-service, est. billings"} ${money(s.est_billings)} − ${s.overhead_pct}% ${S.lang==="fr"?"frais":"overhead"}`; }
+
+async function vShifts(el){
+  const rows = await api().shiftBoard(); if(!el.isConnected) return;
+  const f=S.filt;
+  let list = rows.slice();
+  if(f.prov!=="all") list=list.filter(s=>s.province===f.prov);
+  if(f.only) list=list.filter(s=>s.eligibility.level!=="bad");
+  list.sort((a,b)=> f.sort==="net" ? b.net_estimate-a.net_estimate : f.sort==="day" ? b.net_estimate/b.days-a.net_estimate/a.days : a.start_date.localeCompare(b.start_date));
+  if(!list.find(s=>s.id===S.sel)) S.sel = list[0]?.id || null;
+  const sel = list.find(s=>s.id===S.sel);
+  const provs=[...new Set(rows.map(s=>s.province))].sort();
+  const bookable=rows.filter(s=>s.eligibility.level!=="bad").length;
+  el.innerHTML = `
+    <div class="page-h"><div><h1>${t("t_shifts")}</h1><p>${S.lang==="fr"?"Chaque remplacement est vérifié selon vos permis, votre ACPM et vos formations.":"Every shift is checked against your licences, CMPA cover and courses."}</p></div></div>
+    <div class="toolbar">
+      <label class="sr" for="f-prov">Province</label>
+      <select id="f-prov"><option value="all">${S.lang==="fr"?"Toutes les provinces":"All provinces"}</option>${provs.map(p=>`<option value="${p}" ${f.prov===p?"selected":""}>${esc(provName(p))}</option>`).join("")}</select>
+      <label class="sr" for="f-sort">Sort</label>
+      <select id="f-sort"><option value="date" ${f.sort==="date"?"selected":""}>${S.lang==="fr"?"Date de début":"Soonest first"}</option><option value="net" ${f.sort==="net"?"selected":""}>${S.lang==="fr"?"Revenu net le plus élevé":"Highest take-home"}</option><option value="day" ${f.sort==="day"?"selected":""}>${S.lang==="fr"?"Revenu par jour":"Take-home per day"}</option></select>
+      <label class="tgl" for="f-only"><input type="checkbox" id="f-only" ${f.only?"checked":""}>${S.lang==="fr"?"Seulement ceux que je peux réserver":"Only shifts I can book"}</label>
+      <span class="count">${S.lang==="fr"?`${bookable} sur ${rows.length} réservables`:`${bookable} of ${rows.length} bookable`}</span>
+    </div>
+    ${list.length ? `<div class="sv">
+      <div class="sv-list" role="listbox" aria-label="Shifts">${list.map(s=>`
+        <button class="row" role="option" data-sel="${s.id}" aria-selected="${s.id===S.sel}">
+          ${ICON[s.eligibility.level]}
+          <span class="t">${esc(s.clinic_name)}${s.urgent?`<span class="flag">Urgent</span>`:""}</span>
+          <span class="s">${esc(s.city)}, ${esc(s.province)}. ${frange(s.start_date,s.end_date)}</span>
+          <span class="r num"><b>${money(s.net_estimate)}</b><span>${s.days} ${s.days>1?(S.lang==="fr"?"jours":"days"):(S.lang==="fr"?"jour":"day")}</span></span>
+        </button>`).join("")}</div>
+      <div class="sv-detail">${sel?shiftDetail(sel):""}</div>
+    </div>` : `<div class="empty"><p>${S.lang==="fr"?"Aucun remplacement ne correspond à ces filtres.":"No shifts match these filters."}</p><button class="btn" id="f-clear">${S.lang==="fr"?"Effacer les filtres":"Clear filters"}</button></div>`}`;
+  $("f-prov").onchange=e=>{f.prov=e.target.value;render();};
+  $("f-sort").onchange=e=>{f.sort=e.target.value;render();};
+  $("f-only").onchange=e=>{f.only=e.target.checked;render();};
+  if($("f-clear")) $("f-clear").onclick=()=>{f.prov="all";f.only=false;render();};
+  el.querySelectorAll("[data-sel]").forEach(b=>b.onclick=()=>{S.sel=b.dataset.sel;render();});
+  const bk=$("book"); if(bk){ const ag=$("agree"); ag.onchange=()=>bk.disabled=!ag.checked; bk.onclick=()=>doBook(sel); }
+}
+function shiftDetail(s){
+  const e=s.eligibility, fr=S.lang==="fr";
+  return `
+    <div><h2>${esc(s.clinic_name)}</h2><p class="muted">${esc(s.city)}, ${esc(provName(s.province))}${s.program?`. ${esc(s.program)}`:""}</p></div>
+    <dl class="facts">
+      <div><dt>${fr?"Dates":"Dates"}</dt><dd>${frange(s.start_date,s.end_date)}</dd></div>
+      <div><dt>${fr?"Revenu net estimé":"Estimated take-home"}</dt><dd class="num">${money(s.net_estimate)}</dd></div>
+      <div><dt>${fr?"Rémunération":"Pay"}</dt><dd>${payLine(s)}</dd></div>
+      <div><dt>${fr?"Déplacement":"Travel"}</dt><dd>${s.travel_allowance?money(s.travel_allowance):(fr?"Aucun":"None")}</dd></div>
+      <div><dt>${fr?"DME":"EMR"}</dt><dd>${esc(s.emr||"—")}</dd></div>
+      <div><dt>${fr?"Garde":"On-call"}</dt><dd>${s.on_call?(fr?"Inclut la garde de l’hôte":"Includes the host’s on-call"):(fr?"Non":"No")}</dd></div>
+    </dl>
+    <p>${esc(s.scope)}</p>
+    <div><h3 style="font-size:1rem;margin-bottom:10px">${fr?"Vérification de l’admissibilité":"Eligibility check"}</h3>
+      <ul class="checks">${e.reasons.map(r=>`<li>${ICON[r.k]}<span>${esc(rt(r.t))}</span></li>`).join("")}</ul></div>
+    <div class="verdict ${e.level}">${levelVerdict[e.level][S.lang]}</div>
+    ${e.level!=="bad"?`
+    <div><h3 style="font-size:1rem;margin-bottom:8px">${fr?"Entente de remplacement":"Locum agreement"}</h3>
+      <ul class="terms">
+        <li><b>${fr?"Paiement :":"Payment:"}</b> ${fr?"dû 14 jours après l’approbation de la feuille de temps; intérêts de 2 % par mois en cas de retard.":"due 14 days after the timesheet is approved; 2% a month interest on late payment."}</li>
+        <li><b>${fr?"Facturation :":"Billing:"}</b> ${fr?"selon l’entente convenue pour la province; l’hôte fournit un relevé quotidien.":"claims follow the arrangement agreed for the province; the host provides a daily billing record."}</li>
+        <li><b>${fr?"Responsabilité :":"Liability:"}</b> ${fr?"le remplaçant maintient sa protection de l’ACPM pour toutes les dates.":"you keep CMPA cover for all dates; the host insures premises and staff."}</li>
+        <li><b>${fr?"Dossiers :":"Records:"}</b> ${fr?"les dossiers des patients restent dans le DME de la clinique.":"patient records stay in the clinic’s EMR."}</li>
+      </ul></div>
+    <div class="book-bar">
+      <label class="tgl" for="agree"><input type="checkbox" id="agree">${fr?"J’accepte ces conditions":"I agree to these terms"}</label>
+      <button class="btn primary" id="book" disabled>${e.level==="warn"?(fr?"Réserver en attente":"Hold shift"):(fr?"Réserver":"Book shift")}</button>
+    </div>`:""}`;
+}
+async function doBook(s){
+  try{ await api().book(s.id); toast(s.eligibility.level==="warn" ? (S.lang==="fr"?"Remplacement réservé en attente.":"Shift held. It confirms when the outstanding item is cleared.") : (S.lang==="fr"?"Réservé. L’entente est signée.":"Booked. The agreement is signed.")); go("bookings"); }
+  catch(err){ toast(err.message); }
+}
+
+function bookingTag(b){
+  const fr=S.lang==="fr";
+  const m={held:["warn",fr?"En attente":"Held"],confirmed:["ok",fr?"Confirmé":"Confirmed"],completed:["info",fr?"Terminé":"Completed"],cancelled:["mute",fr?"Annulé":"Cancelled"]}[b.status];
+  return `<span class="tag ${m[0]}">${ICON[m[0]]}${m[1]}</span>`;
+}
+async function vBookings(el){
+  const rows = await api().myBookings(), fr=S.lang==="fr"; if(!el.isConnected) return;
+  const up=rows.filter(b=>["held","confirmed"].includes(b.status) && b.shift.end_date>=today());
+  const past=rows.filter(b=>!up.includes(b));
+  const tbl = (list,showCancel) => `<div class="tbl-wrap"><table class="tbl"><thead><tr><th>${fr?"Clinique":"Clinic"}</th><th>${fr?"Dates":"Dates"}</th><th class="r">${fr?"Revenu net estimé":"Est. take-home"}</th><th>${fr?"Statut":"Status"}</th><th></th></tr></thead><tbody>
+    ${list.map(b=>`<tr><td><b>${esc(b.shift.clinic_name)}</b><div class="sub">${esc(b.shift.city)}, ${esc(b.shift.province)}</div></td><td>${frange(b.shift.start_date,b.shift.end_date)}</td><td class="r num">${money(b.shift.net_estimate)}</td><td>${bookingTag(b)}</td>
+      <td><div class="actions">${showCancel && b.shift.start_date>today()?`<button class="btn sm" data-cancel="${b.id}">${fr?"Annuler":"Cancel"}</button>`:""}</div></td></tr>`).join("")}</tbody></table></div>`;
+  el.innerHTML = `<div class="page-h"><div><h1>${t("t_bookings")}</h1><p>${fr?"Chaque réservation comporte une entente signée par les deux parties.":"Each booking carries an agreement signed by both parties."}</p></div><button class="btn" data-go="shifts">${fr?"Trouver un remplacement":"Find shifts"}</button></div>
+    <div class="group"><h2>${fr?"À venir":"Upcoming"}</h2>${up.length?tbl(up,true):`<div class="tbl-wrap"><div class="empty"><p>${fr?"Aucune réservation à venir.":"No upcoming bookings."}</p></div></div>`}</div>
+    <div class="group"><h2>${fr?"Antérieures":"Past"}</h2>${past.length?tbl(past,false):`<div class="tbl-wrap"><div class="empty"><p>${fr?"Rien pour l’instant.":"Nothing yet."}</p></div></div>`}</div>`;
+  el.querySelectorAll("[data-cancel]").forEach(b=>b.onclick=()=>cancelDialog(b.dataset.cancel));
+}
+function cancelDialog(id){
+  const fr=S.lang==="fr";
+  openDialog(`<h2>${fr?"Annuler la réservation":"Cancel booking"}</h2><p class="muted">${fr?"La clinique sera avisée et le remplacement sera republié.":"The clinic is told and the shift goes back on the board."}</p>
+    <div class="field"><label for="c-reason">${fr?"Motif":"Reason"}</label><textarea id="c-reason" rows="3"></textarea></div><p class="err" id="c-err" hidden></p>
+    <div class="dlg-actions"><button class="btn" id="c-no">${fr?"Garder la réservation":"Keep booking"}</button><button class="btn primary" id="c-yes">${fr?"Annuler la réservation":"Cancel booking"}</button></div>`, b=>{
+    $("c-no").onclick=closeDialog;
+    $("c-yes").onclick=async()=>{ try{ await api().cancel(id,$("c-reason").value); closeDialog(); toast(fr?"Réservation annulée.":"Booking cancelled."); render(); }catch(e){ $("c-err").textContent=e.message; $("c-err").hidden=false; } };
+  });
+}
+
+async function vPay(el){
+  const rows = await api().myBookings(), fr=S.lang==="fr"; if(!el.isConnected) return;
+  const due = rows.filter(b=>b.status==="confirmed" && b.shift.start_date<=today() && (!b.timesheet || b.timesheet.status==="disputed"));
+  const sheets = rows.filter(b=>b.timesheet && b.timesheet.status!=="disputed");
+  const paid = rows.filter(b=>b.invoice && b.invoice.paid_at).reduce((a,b)=>a+Number(b.invoice.net_amount),0);
+  const owed = rows.filter(b=>b.invoice && !b.invoice.paid_at).reduce((a,b)=>a+Number(b.invoice.net_amount),0);
+  el.innerHTML = `<div class="page-h"><div><h1>${t("t_pay")}</h1><p>${fr?"Soumettez votre feuille de temps; une facture est émise à l’approbation.":"Submit a timesheet; an invoice is issued when the clinic approves it."}</p></div></div>
+    <div class="stats"><div><b class="num">${money(paid)}</b><span>${fr?"Payé":"Paid"}</span></div><div><b class="num">${money(owed)}</b><span>${fr?"Facturé, à recevoir":"Invoiced, not yet paid"}</span></div><div><b class="num">${due.length}</b><span>${fr?"Feuilles de temps à soumettre":"Timesheets to submit"}</span></div></div>
+    ${due.length?`<div class="group" style="margin-top:0"><h2>${fr?"À soumettre":"Ready to submit"}</h2><div class="tbl-wrap"><table class="tbl"><tbody>${due.map(b=>`<tr><td><b>${esc(b.shift.clinic_name)}</b><div class="sub">${frange(b.shift.start_date,b.shift.end_date)}</div>${b.timesheet?.status==="disputed"?`<div class="sub" style="color:var(--warn)">${fr?"Correction demandée :":"Correction requested:"} ${esc(b.timesheet.dispute_reason||"")}</div>`:""}</td><td class="r"><button class="btn primary sm" data-ts="${b.id}">${fr?"Soumettre la feuille de temps":"Submit timesheet"}</button></td></tr>`).join("")}</tbody></table></div></div>`:""}
+    <div class="group"><h2>${fr?"Feuilles de temps et factures":"Timesheets and invoices"}</h2>
+    ${sheets.length?`<div class="tbl-wrap"><table class="tbl"><thead><tr><th>${fr?"Clinique":"Clinic"}</th><th>${fr?"Feuille de temps":"Timesheet"}</th><th>${fr?"Facture":"Invoice"}</th><th class="r">${fr?"Montant":"Amount"}</th><th>${fr?"Échéance":"Due"}</th></tr></thead><tbody>
+    ${sheets.map(b=>{ const ts=b.timesheet, inv=b.invoice; return `<tr><td><b>${esc(b.shift.clinic_name)}</b><div class="sub">${frange(b.shift.start_date,b.shift.end_date)}</div></td>
+      <td>${ts.status==="approved"?`<span class="tag ok">${ICON.ok}${fr?"Approuvée":"Approved"}</span>`:`<span class="tag warn">${ICON.warn}${fr?"En attente d’approbation":"Awaiting approval"}</span>`}</td>
+      <td>${inv?esc(inv.number):"—"}</td><td class="r num">${inv?money(inv.net_amount):"—"}</td>
+      <td>${inv?(inv.paid_at?`<span class="tag ok">${ICON.ok}${fr?"Payée le":"Paid"} ${fdate(inv.paid_at)}</span>`:fdate(inv.due_on,{day:"numeric",month:"short",year:"numeric"})):"—"}</td></tr>`; }).join("")}
+    </tbody></table></div>`:`<div class="tbl-wrap"><div class="empty"><p>${fr?"Aucune feuille de temps pour l’instant.":"No timesheets yet."}</p></div></div>`}</div>`;
+  el.querySelectorAll("[data-ts]").forEach(b=>b.onclick=()=>tsDialog(rows.find(x=>x.id===b.dataset.ts)));
+}
+function tsDialog(b){
+  const fr=S.lang==="fr", s=b.shift;
+  openDialog(`<h2>${fr?"Feuille de temps":"Timesheet"}</h2><p class="muted">${esc(s.clinic_name)}, ${frange(s.start_date,s.end_date)}</p>
+    <div class="form-grid">
+      <div class="field"><label for="ts-days">${fr?"Jours travaillés":"Days worked"}</label><input type="number" id="ts-days" min="0.5" step="0.5" max="${s.days}" value="${s.days}"></div>
+      ${s.pay_model==="ffs"?`<div class="field"><label for="ts-bill">${fr?"Facturation totale ($)":"Total billings ($)"}</label><input type="number" id="ts-bill" min="0" step="1"></div>`:`<div></div>`}
+      <div class="field full"><label for="ts-notes">${fr?"Notes pour la clinique":"Notes for the clinic"}</label><textarea id="ts-notes" rows="2"></textarea></div>
+      <label class="tgl full" for="ts-early"><input type="checkbox" id="ts-early">${fr?"Paiement le jour ouvrable suivant l’approbation":"Pay me the next business day after approval"}</label>
+    </div><p class="err" id="ts-err" hidden></p>
+    <div class="dlg-actions"><button class="btn" id="ts-no">${fr?"Annuler":"Cancel"}</button><button class="btn primary" id="ts-yes">${fr?"Soumettre":"Submit timesheet"}</button></div>`, ()=>{
+    $("ts-no").onclick=closeDialog;
+    $("ts-yes").onclick=async()=>{ try{ const bill=$("ts-bill")?Number($("ts-bill").value)||null:null; await api().submitTimesheet(b.id, Number($("ts-days").value), bill, $("ts-notes").value||null, $("ts-early").checked); closeDialog(); toast(fr?"Feuille de temps soumise.":"Timesheet submitted."); render(); }catch(e){ $("ts-err").textContent=e.message; $("ts-err").hidden=false; } };
+  });
+}
+
+function credState(c){
+  const fr=S.lang==="fr";
+  if(c.verification_status==="pending") return ["warn",fr?"Vérification en cours":"Being verified"];
+  if(c.verification_status==="rejected") return ["bad",fr?"Refusé":"Not accepted"];
+  if(c.verification_status==="expired") return ["bad",fr?"Expiré":"Expired"];
+  if(!c.expires_on) return ["ok",fr?"Vérifié":"Verified"];
+  const d=Math.round((d8(c.expires_on)-d8(today()))/864e5);
+  if(d<0) return ["bad",fr?"Expiré":"Expired"];
+  if(d<=45) return ["warn",fr?`Expire dans ${d} jours`:`Expires in ${d} days`];
+  return ["ok",fr?"Vérifié":"Verified"];
+}
+const CTYPE = {licence:["Licence","Permis"],liability:["Liability cover","Responsabilité"],certification:["Certification","Certification"],course:["Course","Formation"],billing:["Billing number","Numéro de facturation"]};
+async function vCreds(el){
+  const rows = await api().credentials(), fr=S.lang==="fr"; if(!el.isConnected) return;
+  const soon = rows.filter(c=>credState(c)[0]!=="ok");
+  el.innerHTML = `<div class="page-h"><div><h1>${t("t_creds")}</h1><p>${fr?"Vérifiés une fois, partagés avec chaque clinique où vous réservez. Modifier un titre le renvoie en vérification.":"Verified once and shared with each clinic you book with. Editing a credential sends it back for verification."}</p></div><button class="btn primary" id="add-cred">${fr?"Ajouter un titre":"Add credential"}</button></div>
+    ${soon.length?`<div class="notice">${fr?"À surveiller :":"Needs attention:"} ${soon.map(c=>`${esc(c.label)} (${credState(c)[1].toLowerCase()})`).join("; ")}.</div>`:""}
+    <div class="tbl-wrap"><table class="tbl"><thead><tr><th>${fr?"Titre":"Credential"}</th><th>${fr?"Numéro":"Reference"}</th><th>${fr?"Expiration":"Expires"}</th><th>${fr?"Statut":"Status"}</th><th>${fr?"Source de vérification":"Verified against"}</th></tr></thead><tbody>
+    ${rows.map(c=>{ const st=credState(c); return `<tr><td><b>${esc(c.label)}</b><div class="sub">${CTYPE[c.type][fr?1:0]}${c.province?", "+esc(provName(c.province)):""}</div></td><td>${esc(c.reference||"—")}</td><td class="num">${c.expires_on?fdate(c.expires_on,{day:"numeric",month:"short",year:"numeric"}):"—"}</td><td><span class="tag ${st[0]}">${ICON[st[0]]}${st[1]}</span></td><td class="sub">${esc(c.verification_source||"—")}</td></tr>`; }).join("")}
+    </tbody></table></div>`;
+  $("add-cred").onclick=credDialog;
+}
+function credDialog(){
+  const fr=S.lang==="fr";
+  openDialog(`<h2>${fr?"Ajouter un titre":"Add credential"}</h2>
+    <div class="form-grid">
+      <div class="field"><label for="cr-type">${fr?"Type":"Type"}</label><select id="cr-type">${Object.entries(CTYPE).map(([k,v])=>`<option value="${k}">${v[fr?1:0]}</option>`).join("")}</select></div>
+      <div class="field"><label for="cr-prov">${fr?"Province":"Province"}</label><select id="cr-prov"><option value="">${fr?"Sans objet":"Not province-specific"}</option>${Object.keys(PROV).map(p=>`<option value="${p}">${esc(provName(p))}</option>`).join("")}</select></div>
+      <div class="field full"><label for="cr-label">${fr?"Nom":"Name"}</label><input type="text" id="cr-label" placeholder="${fr?"p. ex. Permis d’exercice du CPSO":"e.g. CPSO certificate of registration"}"></div>
+      <div class="field"><label for="cr-ref">${fr?"Numéro":"Reference number"}</label><input type="text" id="cr-ref"></div>
+      <div class="field"><label for="cr-exp">${fr?"Date d’expiration":"Expiry date"}</label><input type="date" id="cr-exp"></div>
+    </div><p class="small muted">${fr?"Nous vérifions les permis auprès du tableau de l’ordre avant de les afficher aux cliniques.":"Licences are checked against the college’s public register before clinics see them."}</p><p class="err" id="cr-err" hidden></p>
+    <div class="dlg-actions"><button class="btn" id="cr-no">${fr?"Annuler":"Cancel"}</button><button class="btn primary" id="cr-yes">${fr?"Soumettre pour vérification":"Submit for verification"}</button></div>`, ()=>{
+    $("cr-no").onclick=closeDialog;
+    $("cr-yes").onclick=async()=>{ const type=$("cr-type").value, prov=$("cr-prov").value||null, label=$("cr-label").value.trim();
+      const err=m=>{ $("cr-err").textContent=m; $("cr-err").hidden=false; };
+      if(!label) return err(fr?"Indiquez le nom du titre.":"Enter the credential’s name.");
+      if(type==="licence" && !prov) return err(fr?"Choisissez la province du permis.":"Choose the province for this licence.");
+      try{ await api().addCredential({type,label,province:prov,reference:$("cr-ref").value||null,expires_on:$("cr-exp").value||null}); closeDialog(); toast(fr?"Titre soumis pour vérification.":"Submitted for verification."); render(); }catch(e){ err(e.message); } };
+  });
+}
+
+async function vAccount(el){
+  const {clinician:c, actions} = await api().standing(), fr=S.lang==="fr"; if(!el.isConnected) return;
+  const st={good:["ok",fr?"En règle":"Good standing"],restricted:["warn",fr?"Restreint":"Restricted"],suspended:["bad",fr?"Suspendu":"Suspended"]}[c.standing];
+  el.innerHTML = `<div class="page-h"><div><h1>${t("t_account")}</h1></div></div>
+    <div class="cols">
+      <div class="panel"><h2>${fr?"Statut du compte":"Account standing"}</h2><p><span class="tag ${st[0]}">${ICON[st[0]]}${st[1]}</span></p>
+        <p class="muted">${c.completed_shifts} ${fr?"remplacements effectués":"completed shifts"}${c.rating?`, ${fr?"note des cliniques":"clinic rating"} ${c.rating}`:""}</p>
+        ${actions.length?`<div class="tbl-wrap"><table class="tbl"><tbody>${actions.map(a=>`<tr><td><b>${esc(S.lang==="fr"?({restrict:"Restriction",suspend:"Suspension",reinstate:"Rétablissement"}[a.action]||a.action):a.action)}</b><div class="sub">${esc(a.reason)}</div></td><td class="sub">${fdate(a.effective_at)}</td></tr>`).join("")}</tbody></table></div>`:""}</div>
+      <div class="panel"><h2>${fr?"Si votre compte est restreint":"If your account is ever restricted"}</h2><ul>
+        <li>${fr?"Vous recevez les motifs par écrit, avec les éléments invoqués.":"You get the reasons in writing, with the evidence relied on."}</li>
+        <li>${fr?"Un préavis de 7 jours est donné, sauf si un ordre a suspendu votre permis.":"You get 7 days’ notice, unless a college has suspended your licence."}</li>
+        <li>${fr?"Vous pouvez faire appel auprès d’une personne.":"You can appeal to a person, not an automated process."}</li>
+        <li>${fr?"Les sommes déjà gagnées ne sont jamais retenues.":"Pay you’ve already earned is never withheld."}</li></ul></div>
+      <div class="panel"><h2>${fr?"Vos données":"Your data"}</h2><p class="muted">${fr?"Vos données sont hébergées au Canada. Vous pouvez obtenir une copie complète ou demander la suppression de votre compte.":"Your data is hosted in Canada. You can get a full copy or ask for your account to be deleted."}</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="exp">${fr?"Obtenir une copie":"Get a copy of my data"}</button><button class="btn quiet" id="del">${fr?"Demander la suppression":"Request deletion"}</button></div></div>
+      <div class="panel"><h2>${fr?"Profil":"Profile"}</h2><p class="muted">${esc(c.specialty)}${c.certification?", "+esc(c.certification):""}<br>${fr?"DME":"EMRs"}: ${esc((c.emrs||[]).join(", ")||"—")}<br>${fr?"Langues":"Languages"}: ${esc((c.languages||[]).join(", "))}</p></div>
+    </div>`;
+  $("exp").onclick=async()=>{ try{ const d=await api().exportData(); const txt=JSON.stringify(d,null,2);
+    openDialog(`<h2>${fr?"Vos données":"Your data"}</h2><pre class="json" id="json">${esc(txt)}</pre><div class="dlg-actions"><button class="btn" id="cp">${fr?"Copier":"Copy"}</button><button class="btn primary" id="cl">${fr?"Fermer":"Close"}</button></div>`,()=>{
+      $("cl").onclick=closeDialog; $("cp").onclick=()=>{ navigator.clipboard?.writeText(txt).then(()=>toast(fr?"Copié.":"Copied."),()=>{ const r=document.createRange(); r.selectNodeContents($("json")); const s=getSelection(); s.removeAllRanges(); s.addRange(r); }); }; }); }catch(e){ toast(e.message); } };
+  $("del").onclick=()=>openDialog(`<h2>${fr?"Demander la suppression":"Request account deletion"}</h2><p class="muted">${fr?"Notre responsable de la protection des renseignements personnels traitera la demande. Les dossiers de facturation sont conservés selon les exigences fiscales.":"Our privacy officer handles the request. Invoices are kept as long as tax law requires."}</p>
+    <div class="field"><label for="del-note">${fr?"Note (facultatif)":"Note (optional)"}</label><textarea id="del-note" rows="2"></textarea></div>
+    <div class="dlg-actions"><button class="btn" id="dn">${fr?"Annuler":"Cancel"}</button><button class="btn primary" id="dy">${fr?"Envoyer la demande":"Send request"}</button></div>`,()=>{
+      $("dn").onclick=closeDialog; $("dy").onclick=async()=>{ try{ await api().requestDeletion($("del-note").value||null); closeDialog(); toast(fr?"Demande envoyée.":"Request sent."); }catch(e){ toast(e.message); } }; });
+}
+
+/* ============ Clinic views ============ */
+async function vClinicShifts(el){
+  const fr=S.lang==="fr";
+  if(!S.me.clinics.length){ el.innerHTML = clinicSetup(); bindClinicSetup(); return; }
+  const rows = await api().clinicShifts(); if(!el.isConnected) return;
+  const open=rows.filter(s=>s.status==="open");
+  if(!rows.find(s=>s.id===S.cshift)) S.cshift = open[0]?.id || rows[0]?.id || null;
+  const sel = rows.find(s=>s.id===S.cshift);
+  const stTag = s => s.status==="open" ? `<span class="tag warn">${ICON.warn}${fr?"À combler":"Open"}</span>` : s.booking ? `<span class="tag ok">${ICON.ok}${esc(s.booking.clinician_name)}</span>` : `<span class="tag mute">${ICON.mute}${({completed:fr?"Terminé":"Completed",cancelled:fr?"Annulé":"Cancelled",filled:fr?"Comblé":"Filled"})[s.status]||s.status}</span>`;
+  el.innerHTML = `<div class="page-h"><div><h1>${t("t_cshifts")}</h1><p>${esc(S.me.clinics.map(c=>c.name).slice(0,3).join(", "))}${S.me.clinics.length>3?` ${fr?"et":"and"} ${S.me.clinics.length-3} ${fr?"autres":"more"}`:""}</p></div><button class="btn primary" id="post">${t("post")}</button></div>
+    <div class="stats"><div><b class="num">${open.length}</b><span>${fr?"À combler":"Open shifts"}</span></div><div><b class="num">${rows.filter(s=>s.booking).length}</b><span>${fr?"Comblés":"Filled"}</span></div></div>
+    ${rows.length?`<div class="sv">
+      <div class="sv-list" role="listbox">${rows.map(s=>`<button class="row" role="option" data-cs="${s.id}" aria-selected="${s.id===S.cshift}">
+        ${s.status==="open"?ICON.warn:ICON.ok}<span class="t">${frange(s.start_date,s.end_date)}${s.urgent?`<span class="flag">Urgent</span>`:""}</span>
+        <span class="s">${esc(s.clinic_name)}. ${payLine(s)}</span><span class="r">${stTag(s)}</span></button>`).join("")}</div>
+      <div class="sv-detail" id="cand">${sel?`<div><h2>${frange(sel.start_date,sel.end_date)}</h2><p class="muted">${esc(sel.clinic_name)}, ${esc(sel.city)}. ${esc(sel.scope)}</p></div>${sel.status==="open"?`<div class="loading">${fr?"Classement des candidats…":"Ranking candidates…"}</div>`:`<div class="verdict ok">${fr?"Comblé par":"Filled by"} ${esc(sel.booking?.clinician_name||"")}. ${sel.booking?.status==="held"?(fr?"En attente d’un élément à régler.":"Held until an outstanding item is cleared."):""}</div>`}`:""}</div>
+    </div>`:`<div class="tbl-wrap"><div class="empty"><p>${fr?"Aucun remplacement publié.":"You haven’t posted a shift yet."}</p><button class="btn primary" id="post2">${t("post")}</button></div></div>`}`;
+  $("post").onclick=postDialog; if($("post2")) $("post2").onclick=postDialog;
+  el.querySelectorAll("[data-cs]").forEach(b=>b.onclick=()=>{S.cshift=b.dataset.cs;render();});
+  if(sel && sel.status==="open") loadCandidates(sel);
+}
+async function loadCandidates(sel){
+  const fr=S.lang==="fr", box=$("cand");
+  try{
+    const list = await api().rank(sel.id);
+    if(!box.isConnected) return;
+    box.querySelector(".loading").outerHTML = `<div><h3 style="font-size:1rem">${fr?"Candidats suggérés":"Suggested physicians"}</h3><p class="small muted" style="margin-top:4px">${fr?"Classés selon l’admissibilité, votre banque de remplaçants, la connaissance du DME et l’historique. Chaque recherche est consignée.":"Ranked by eligibility, your locum bank, EMR familiarity and track record. Each search is logged."}</p></div>
+      <div>${list.map(c=>`<div class="cand"><div class="nm">${esc(c.full_name)}${c.in_bank?` <span class="small muted" style="font-weight:400">${fr?"dans votre banque":"in your bank"}</span>`:""}</div>
+        <div class="why">${c.reasons.map(r=>`<span class="tag ${r.k}" style="font-weight:400">${ICON[r.k]}${esc(rt(r.t))}</span>`).join("")}</div>
+        <div class="sc"><div class="meter" aria-hidden="true"><i style="width:${c.score}%"></i></div><span class="num" style="font-weight:700;width:2ch;text-align:right">${c.score}</span>
+        <button class="btn sm ${c.level==="ok"?"primary":""}" data-inv="${c.clinician_id}" ${c.invited||c.level==="bad"?"disabled":""}>${c.invited?(fr?"Invité":"Invited"):(fr?"Inviter":"Invite")}</button></div></div>`).join("")}</div>`;
+    box.querySelectorAll("[data-inv]").forEach(b=>b.onclick=async()=>{ try{ await api().invite(sel.id,b.dataset.inv); b.disabled=true; b.textContent=fr?"Invité":"Invited"; toast(fr?"Invitation envoyée.":"Invitation sent."); }catch(e){ toast(e.message); } });
+  }catch(e){ const l=box.querySelector(".loading"); if(l) l.textContent=e.message; }
+}
+function clinicSetup(){
+  const fr=S.lang==="fr";
+  return `<div class="page-h"><div><h1>${fr?"Configurer votre clinique":"Set up your clinic"}</h1><p>${fr?"Ajoutez votre clinique pour publier des remplacements.":"Add your clinic to start posting shifts."}</p></div></div>
+  <form class="panel" id="cl-form" style="max-width:560px" novalidate><div class="form-grid">
+    <div class="field full"><label for="cl-name">${fr?"Nom de la clinique":"Clinic name"}</label><input type="text" id="cl-name" required></div>
+    <div class="field"><label for="cl-city">${fr?"Ville":"City"}</label><input type="text" id="cl-city" required></div>
+    <div class="field"><label for="cl-prov">Province</label><select id="cl-prov">${Object.keys(PROV).map(p=>`<option value="${p}" ${p==="ON"?"selected":""}>${esc(provName(p))}</option>`).join("")}</select></div>
+    <div class="field full"><label for="cl-emr">${fr?"DME":"EMR"}</label><select id="cl-emr">${EMRS.map(e=>`<option>${e}</option>`).join("")}</select></div>
+  </div><p class="err" id="cl-err" hidden></p><div><button class="btn primary" type="submit">${fr?"Créer la clinique":"Create clinic"}</button></div></form>`;
+}
+function bindClinicSetup(){
+  $("cl-form").onsubmit=async e=>{ e.preventDefault(); const name=$("cl-name").value.trim(), city=$("cl-city").value.trim();
+    if(!name||!city){ $("cl-err").textContent=S.lang==="fr"?"Indiquez le nom et la ville.":"Enter the clinic’s name and city."; $("cl-err").hidden=false; return; }
+    try{ await api().createClinic({name,city,province:$("cl-prov").value,default_emr:$("cl-emr").value}); toast(S.lang==="fr"?"Clinique créée.":"Clinic created."); render(); }catch(err){ $("cl-err").textContent=err.message; $("cl-err").hidden=false; } };
+}
+function postDialog(){
+  const fr=S.lang==="fr", cl=S.me.clinics;
+  const d=new Date(d8(today()).getTime()+14*864e5).toLocaleDateString("en-CA"), d2=new Date(d8(today()).getTime()+18*864e5).toLocaleDateString("en-CA");
+  openDialog(`<h2>${t("post")}</h2><div class="form-grid">
+    ${cl.length>1?`<div class="field full"><label for="p-cl">${fr?"Clinique":"Clinic"}</label><select id="p-cl">${cl.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join("")}</select></div>`:""}
+    <div class="field"><label for="p-a">${fr?"Début":"Start date"}</label><input type="date" id="p-a" value="${d}"></div>
+    <div class="field"><label for="p-b">${fr?"Fin":"End date"}</label><input type="date" id="p-b" value="${d2}"></div>
+    <div class="field"><label for="p-m">${fr?"Mode de rémunération":"Pay model"}</label><select id="p-m"><option value="per_diem">${fr?"Tarif journalier garanti":"Guaranteed per diem"}</option><option value="ffs">${fr?"À l’acte, moins les frais":"Fee-for-service minus overhead"}</option></select></div>
+    <div class="field"><label for="p-r" id="p-r-l">${fr?"Tarif journalier ($)":"Daily rate ($)"}</label><input type="number" id="p-r" min="0" value="1400"></div>
+    <div class="field" id="p-oh-f" hidden><label for="p-oh">${fr?"Frais (%)":"Overhead (%)"}</label><input type="number" id="p-oh" min="0" max="60" value="30"></div>
+    <div class="field"><label for="p-tr">${fr?"Allocation de déplacement ($)":"Travel allowance ($)"}</label><input type="number" id="p-tr" min="0" value="0"></div>
+    <div class="field"><label for="p-emr">${fr?"DME":"EMR"}</label><select id="p-emr">${EMRS.map(e=>`<option ${e===(cl[0]?.default_emr)?"selected":""}>${e}</option>`).join("")}</select></div>
+    <div class="field full"><label for="p-scope">${fr?"Portée de la pratique":"Scope of practice"}</label><textarea id="p-scope" rows="2">${fr?"Pratique familiale complète, tous âges.":"Full-scope family practice, all ages."}</textarea></div>
+    <label class="tgl" for="p-oc"><input type="checkbox" id="p-oc">${fr?"Inclut la garde":"Includes on-call"}</label>
+    <label class="tgl" for="p-ac"><input type="checkbox" id="p-ac">${fr?"ACLS requis":"ACLS required"}</label>
+    <label class="tgl" for="p-ur"><input type="checkbox" id="p-ur">${fr?"Urgent":"Urgent"}</label>
+    <label class="tgl" for="p-bk"><input type="checkbox" id="p-bk" checked>${fr?"Offrir d’abord à ma banque pendant 24 h":"Offer to my locum bank first for 24 hours"}</label>
+  </div><p class="err" id="p-err" hidden></p>
+  <div class="dlg-actions"><button class="btn" id="p-no">${fr?"Annuler":"Cancel"}</button><button class="btn primary" id="p-yes">${fr?"Publier":"Publish shift"}</button></div>`, ()=>{
+    $("p-m").onchange=e=>{ const ffs=e.target.value==="ffs"; $("p-oh-f").hidden=!ffs; $("p-r-l").textContent= ffs?(fr?"Facturation estimée ($)":"Estimated billings ($)"):(fr?"Tarif journalier ($)":"Daily rate ($)"); $("p-r").value= ffs?9000:1400; };
+    $("p-no").onclick=closeDialog;
+    $("p-yes").onclick=async()=>{ const err=m=>{ $("p-err").textContent=m; $("p-err").hidden=false; };
+      const a=$("p-a").value, b=$("p-b").value, m=$("p-m").value, v=Number($("p-r").value);
+      if(!a||!b||b<a) return err(fr?"La date de fin doit suivre la date de début.":"The end date must be on or after the start date.");
+      if(!(v>0)) return err(fr?"Indiquez un montant.":"Enter the pay amount.");
+      const clinic_id = $("p-cl") ? $("p-cl").value : cl[0].id;
+      const x={clinic_id,start_date:a,end_date:b,pay_model:m,daily_rate:m==="per_diem"?v:null,est_billings:m==="ffs"?v:null,overhead_pct:m==="ffs"?Number($("p-oh").value):null,
+        travel_allowance:Number($("p-tr").value)||0,emr:$("p-emr").value,scope:$("p-scope").value.trim()||"Family practice",on_call:$("p-oc").checked,requires_acls:$("p-ac").checked,urgent:$("p-ur").checked,
+        language:S.lang==="fr"&&cl.find(c=>c.id===clinic_id)?.province==="QC"?"fr":"en", bank_only_until:$("p-bk").checked?new Date(Date.now()+864e5).toISOString():null};
+      try{ await api().postShift(x); closeDialog(); toast(fr?"Remplacement publié.":"Shift published."); S.cshift=null; render(); }catch(e){ err(e.message); } };
+  });
+}
+async function vClinicTime(el){
+  const rows = await api().clinicTimesheets(), fr=S.lang==="fr"; if(!el.isConnected) return;
+  const pend=rows.filter(r=>r.status==="submitted"), done=rows.filter(r=>r.status!=="submitted");
+  const amt = r => { const a=r.booking.agreement||{}; return Math.round(((a.pay_model==="per_diem")?a.daily_rate*r.days_worked:(r.billings_reported||0)*(1-(a.overhead_pct||0)/100))+(a.travel_allowance||0)); };
+  el.innerHTML = `<div class="page-h"><div><h1>${t("t_ctime")}</h1><p>${fr?"Approuver une feuille de temps émet la facture selon l’entente signée.":"Approving a timesheet issues the invoice on the signed agreement’s terms."}</p></div></div>
+    <div class="group" style="margin-top:0"><h2>${fr?"À approuver":"Waiting for you"}</h2>
+    ${pend.length?`<div class="tbl-wrap"><table class="tbl"><thead><tr><th>${fr?"Médecin":"Physician"}</th><th>${fr?"Remplacement":"Shift"}</th><th>${fr?"Jours":"Days"}</th><th class="r">${fr?"Montant":"Amount"}</th><th></th></tr></thead><tbody>
+      ${pend.map(r=>`<tr><td><b>${esc(r.clinician_name)}</b>${r.notes?`<div class="sub">${esc(r.notes)}</div>`:""}${r.early_pay_requested?`<div class="sub">${fr?"Paiement le lendemain demandé":"Next-day pay requested"}</div>`:""}</td><td>${esc(r.shift.clinic_name)}<div class="sub">${frange(r.shift.start_date,r.shift.end_date)}</div></td><td class="num">${r.days_worked}</td><td class="r num">${money(amt(r))}</td>
+        <td><div class="actions"><button class="btn sm" data-dis="${r.id}">${fr?"Demander une correction":"Ask for a correction"}</button><button class="btn sm primary" data-ap="${r.id}">${fr?"Approuver":"Approve"}</button></div></td></tr>`).join("")}</tbody></table></div>`
+      :`<div class="tbl-wrap"><div class="empty"><p>${fr?"Rien à approuver.":"Nothing to approve."}</p></div></div>`}</div>
+    <div class="group"><h2>${fr?"Traitées":"Handled"}</h2>
+    ${done.length?`<div class="tbl-wrap"><table class="tbl"><thead><tr><th>${fr?"Médecin":"Physician"}</th><th>${fr?"Facture":"Invoice"}</th><th class="r">${fr?"Montant":"Amount"}</th><th>${fr?"Statut":"Status"}</th><th></th></tr></thead><tbody>
+      ${done.map(r=>{ const i=r.invoice; return `<tr><td><b>${esc(r.clinician_name)}</b><div class="sub">${frange(r.shift.start_date,r.shift.end_date)}</div></td><td>${i?esc(i.number):"—"}</td><td class="r num">${i?money(i.net_amount):"—"}</td>
+        <td>${r.status==="disputed"?`<span class="tag warn">${ICON.warn}${fr?"Correction demandée":"Correction requested"}</span>`:i&&i.paid_at?`<span class="tag ok">${ICON.ok}${fr?"Payée":"Paid"} ${fdate(i.paid_at)}</span>`:`<span class="tag info">${ICON.info}${fr?"Due le":"Due"} ${fdate(i?.due_on)}</span>`}</td>
+        <td><div class="actions">${i&&!i.paid_at?`<button class="btn sm" data-paid="${i.id}">${fr?"Marquer payée":"Mark paid"}</button>`:""}</div></td></tr>`; }).join("")}</tbody></table></div>`
+      :`<div class="tbl-wrap"><div class="empty"><p>${fr?"Aucune pour l’instant.":"None yet."}</p></div></div>`}</div>`;
+  el.querySelectorAll("[data-ap]").forEach(b=>b.onclick=async()=>{ b.disabled=true; try{ await api().approve(b.dataset.ap); toast(fr?"Approuvée. Facture émise.":"Approved. Invoice issued."); render(); }catch(e){ b.disabled=false; toast(e.message); } });
+  el.querySelectorAll("[data-paid]").forEach(b=>b.onclick=async()=>{ try{ await api().markPaid(b.dataset.paid); toast(fr?"Facture marquée payée.":"Invoice marked paid."); render(); }catch(e){ toast(e.message); } });
+  el.querySelectorAll("[data-dis]").forEach(b=>b.onclick=()=>openDialog(`<h2>${fr?"Demander une correction":"Ask for a correction"}</h2><div class="field"><label for="ds">${fr?"Ce qui doit être corrigé":"What needs correcting"}</label><textarea id="ds" rows="3"></textarea></div><p class="err" id="ds-err" hidden></p>
+    <div class="dlg-actions"><button class="btn" id="dsn">${fr?"Annuler":"Cancel"}</button><button class="btn primary" id="dsy">${fr?"Envoyer":"Send to physician"}</button></div>`,()=>{
+      $("dsn").onclick=closeDialog; $("dsy").onclick=async()=>{ try{ await api().dispute(b.dataset.dis,$("ds").value); closeDialog(); toast(fr?"Demande envoyée.":"Sent to the physician."); render(); }catch(e){ $("ds-err").textContent=e.message; $("ds-err").hidden=false; } }; }));
+}
+
+/* ============ Admin ============ */
+async function vVerify(el){
+  const rows = await api().pendingCredentials(), fr=S.lang==="fr"; if(!el.isConnected) return;
+  el.innerHTML = `<div class="page-h"><div><h1>${t("t_verify")}</h1><p>${fr?"Vérifiez chaque titre auprès de la source primaire avant de l’approuver.":"Check each credential against its primary source before accepting it."}</p></div></div>
+    ${rows.length?`<div class="tbl-wrap"><table class="tbl"><thead><tr><th>${fr?"Médecin":"Physician"}</th><th>${fr?"Titre":"Credential"}</th><th>${fr?"Numéro":"Reference"}</th><th>${fr?"Expiration":"Expires"}</th><th></th></tr></thead><tbody>
+    ${rows.map(c=>`<tr><td><b>${esc(c.clinician_name)}</b></td><td>${esc(c.label)}<div class="sub">${CTYPE[c.type][fr?1:0]}${c.province?", "+esc(c.province):""}</div></td><td>${esc(c.reference||"—")}</td><td>${c.expires_on?fdate(c.expires_on,{day:"numeric",month:"short",year:"numeric"}):"—"}</td>
+      <td><div class="actions"><button class="btn sm" data-rej="${c.id}">${fr?"Refuser":"Not accepted"}</button><button class="btn sm primary" data-ver="${c.id}" data-src="${esc(c.province&&PROV[c.province]?PROV[c.province].college+" public register":"Document reviewed")}">${fr?"Vérifié":"Mark verified"}</button></div></td></tr>`).join("")}
+    </tbody></table></div>`:`<div class="tbl-wrap"><div class="empty"><p>${fr?"Aucun titre en attente.":"No credentials waiting."}</p></div></div>`}`;
+  el.querySelectorAll("[data-ver]").forEach(b=>b.onclick=async()=>{ try{ await api().verify(b.dataset.ver,"verified",b.dataset.src); toast(fr?"Titre vérifié.":"Marked verified."); render(); }catch(e){ toast(e.message); } });
+  el.querySelectorAll("[data-rej]").forEach(b=>b.onclick=async()=>{ try{ await api().verify(b.dataset.rej,"rejected",null); toast(fr?"Titre refusé.":"Marked not accepted."); render(); }catch(e){ toast(e.message); } });
+}
+
+/* ============ Render ============ */
+const VIEWS = { shifts:vShifts, bookings:vBookings, pay:vPay, creds:vCreds, account:vAccount, cshifts:vClinicShifts, ctime:vClinicTime, verify:vVerify };
+let renderSeq=0;
+async function render(){
+  const my=++renderSeq;
+  document.documentElement.lang = S.lang==="fr" ? "fr-CA" : "en-CA";
+  const root=$("root");
+  if(S.mode==="checking"){ root.innerHTML = topBar()+`<main>${vHome()}</main>`; bindTop(); wirePhotos(); return; }
+  if(VIEWS[S.route]){
+    if(!S.me){ S.route="signin"; }
+    else if(!APP_ROUTES[S.me.role].includes(S.route)){ S.route=homeRouteFor(S.me); }
+  }
+  if(S.route==="signin"){ root.innerHTML = topBar()+`<main>${vSignin()}</main>`; bindTop(); bindSignin(); wirePhotos(); return; }
+  if(!VIEWS[S.route]){ root.innerHTML = topBar()+`<main>${vHome()}</main>`; bindTop(); wirePhotos(); return; }
+  root.innerHTML = topBar()+`<main class="app"><div class="wrap" id="view"><div class="loading">${S.lang==="fr"?"Chargement…":"Loading…"}</div></div></main>`;
+  bindTop();
+  const v=$("view");
+  try{ await VIEWS[S.route](v); }
+  catch(e){ if(my!==renderSeq) return; v.innerHTML=`<div class="empty"><p>${esc(e.message)}</p><button class="btn" id="retry">${S.lang==="fr"?"Réessayer":"Try again"}</button></div>`; $("retry").onclick=render; }
+}
+
+function bindTop(){
+  document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>go(b.dataset.go));
+  document.querySelectorAll("[data-scroll]").forEach(b=>b.onclick=()=>{ S.navOpen=false; const go2=()=>document.getElementById(b.dataset.scroll)?.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"}); if(S.route!=="home"){ S.route="home"; render().then?.(go2); setTimeout(go2,30);} else go2(); });
+  document.querySelectorAll("[data-auth]").forEach(b=>b.onclick=()=>{ if(S.me){ go(homeRouteFor(S.me)); return; } S.authTab= S.mode==="live" ? "up" : "in"; S.authRole=b.dataset.auth; go("signin"); });
+  document.querySelectorAll("[data-lang]").forEach(b=>b.onclick=()=>{ S.lang=b.dataset.lang; try{ localStorage.setItem("releve.lang",S.lang); }catch(e){} render(); });
+  if($("menu")) $("menu").onclick=()=>{ S.navOpen=!S.navOpen; render(); };
+  if($("signout")) $("signout").onclick=async()=>{ await api().signOut(); go("home"); };
+  if($("signout-m")) $("signout-m").onclick=async()=>{ await api().signOut(); go("home"); };
+  if($("demo-exit")) $("demo-exit").onclick=async()=>{ await DemoAPI.signOut(); go("home"); };
+}
+function bindSignin(){
+  $("tab-in").onclick=()=>{ S.authTab="in"; render(); };
+  $("tab-up").onclick=()=>{ S.authTab="up"; render(); };
+  if($("r-c")){ $("r-c").onclick=()=>{ S.authRole="clinician"; render(); }; $("r-k").onclick=()=>{ S.authRole="clinic_admin"; render(); }; }
+  $("auth-form").onsubmit=async e=>{ e.preventDefault(); const er=$("a-err"), ok=$("a-ok"); er.hidden=true; ok.hidden=true;
+    const email=$("a-email").value.trim(), pw=$("a-pw").value, fr=S.lang==="fr";
+    if(!email||!pw){ er.textContent=fr?"Entrez votre courriel et votre mot de passe.":"Enter your email and password."; er.hidden=false; return; }
+    try{
+      if(S.authTab==="up"){ const name=$("a-name").value.trim(); if(!name){ er.textContent=fr?"Entrez votre nom.":"Enter your name."; er.hidden=false; return; }
+        if(pw.length<8){ er.textContent=fr?"Le mot de passe doit compter au moins 8 caractères.":"Use at least 8 characters for your password."; er.hidden=false; return; }
+        await api().signUp(email,pw,name,S.authRole); ok.textContent=fr?"Vérifiez vos courriels pour confirmer votre compte.":"Check your email to confirm your account, then sign in."; ok.hidden=false; }
+      else { await api().signIn(email,pw); go(homeRouteFor(S.me)); }
+    }catch(err){ er.textContent=err.message; er.hidden=false; } };
+  document.querySelectorAll("[data-persona]").forEach(b=>b.onclick=async()=>{ S.mode="demo"; D=demoSeed(); await DemoAPI.demoAs(b.dataset.persona); go(homeRouteFor(S.me)); });
+}
+
+/* ============ Boot ============ */
+async function detectBackend(){
+  if(!window.supabase) return false;
+  try{
+    const ctl=new AbortController(); const tm=setTimeout(()=>ctl.abort(),4000);
+    const r=await fetch(CONFIG.url+"/auth/v1/health",{headers:{apikey:CONFIG.key},signal:ctl.signal}); clearTimeout(tm);
+    return r.ok;
+  }catch(e){ return false; }
+}
+(async function boot(){
+  const h=(location.hash||"").slice(1); if(h) S.route=h;
+  render();
+  const live = await detectBackend();
+  if(live){
+    S.mode="live";
+    sb = window.supabase.createClient(CONFIG.url, CONFIG.key, {auth:{persistSession:true,autoRefreshToken:true}});
+    try{ S.me = await LiveAPI.loadMe(); }catch(e){ S.me=null; }
+    sb.auth.onAuthStateChange(async (ev)=>{ if(ev==="SIGNED_OUT"){ S.me=null; render(); } });
+  } else {
+    S.mode="demo";
+  }
+  render();
+})();
+</script>
+
+</body>
+</html>
